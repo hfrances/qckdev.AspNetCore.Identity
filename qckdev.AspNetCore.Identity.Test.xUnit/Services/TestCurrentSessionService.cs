@@ -1,30 +1,40 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using qckdev.AspNetCore.Identity.Services;
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace qckdev.AspNetCore.Identity.Test.xUnit.Services
 {
-    sealed class CurrentSessionService : ICurrentSessionService
+    sealed class TestCurrentSessionService : ICurrentSessionService
     {
-        const string baseUrl = "https://miauth.local";
+        const string baseUrl = "https://miauth.loc";
 
-        string _userId;
+        public ClaimsPrincipal CurrentUser { get; private set; } = new ClaimsPrincipal();
+        private IOptionsMonitor<JwtBearerOptions> Options { get; }
 
-        public ClaimsPrincipal CurrentUser =>
-            throw new NotImplementedException();
+        public TestCurrentSessionService(IOptionsMonitor<JwtBearerOptions> options)
+        {
+            this.Options = options;
+        }
+
+
+        public void SetAccessToken(string value)
+        {
+            var options = Options.Get(JwtBearerDefaults.AuthenticationScheme);
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            this.CurrentUser = tokenHandler.ValidateToken(value, options.TokenValidationParameters, out SecurityToken validatedToken);
+        }
 
         public string GetUserNameIdentifier()
         {
-            return _userId;
-        }
-
-        public void SetUserId(string value)
-        {
-            _userId = value;
+            return this.CurrentUser?.FindFirstValue(ClaimTypes.NameIdentifier);
         }
 
         public async Task<string> GetAuthenticationScheme()

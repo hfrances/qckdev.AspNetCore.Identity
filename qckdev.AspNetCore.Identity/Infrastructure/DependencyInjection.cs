@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using qckdev.AspNetCore.Identity.Infrastructure.Data;
@@ -62,13 +61,13 @@ namespace qckdev.AspNetCore.Identity.Infrastructure
                 .AddScoped<IApplicationDbContext>(
                     provider => provider.GetService<TApplicationDbContext>())
                 .AddIdentityCore<TUser>(identityOptions)
-                .AddRoles<TRole>()
-                .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory<TUser, TRole>>()
-                .AddEntityFrameworkStores<TApplicationDbContext>()
-                .AddSignInManager<TSignInManager>()
-                .AddDefaultTokenProviders()
-                .AddJwtRefreshTokenProvider();
-            services
+                    .AddRoles<TRole>()
+                    .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory<TUser, TRole>>()
+                    .AddEntityFrameworkStores<TApplicationDbContext>()
+                    .AddSignInManager<TSignInManager>()
+                    .AddDefaultTokenProviders()
+                    .AddJwtRefreshTokenProvider()
+                    .Up()
                 .AddScoped<IIdentityManager, IdentityManager<TUser, TRole>>();
 
             return services;

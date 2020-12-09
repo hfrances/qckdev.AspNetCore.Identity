@@ -28,8 +28,6 @@ namespace qckdev.AspNetCore.Identity.Helpers
 
         public static async Task<TokenViewModel> CreateToken(IServiceProvider services, IdentityUser user, IEnumerable<string> roles, IEnumerable<Claim> claims = null, string schemeName = JwtBearerDefaults.AuthenticationScheme)
         {
-            var identityManager = services.GetService<IIdentityManager>();
-
             var jwtBearerOptions = services
                 .GetService<IOptionsMonitor<JwtBearerOptions>>()
                 ?.Get(schemeName);
@@ -41,10 +39,12 @@ namespace qckdev.AspNetCore.Identity.Helpers
                 issuerSigningKey, user, roles, claims,
                 jwtBearerMoreOptions?.TokenLifeTimespan
             );
-            /*var refreshToken =
+            /*
+             var identityManager = services.GetService<IIdentityManager>();
+             var refreshToken =
                 await identityManager.GenerateUserTokenAsync(
-                    user, nameof(JwtRefreshTokenProvider<IdentityUser>), "Refresh");*/
-            /*var refreshTokenGood = 
+                    user, nameof(JwtRefreshTokenProvider<IdentityUser>), "Refresh");
+             var refreshTokenGood = 
                 await identityManager.VerifyUserTokenAsync(
                     user, nameof(JwtRefreshTokenProvider<IdentityUser>), null, refreshToken);*/
 

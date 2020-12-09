@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.AspNetCore.Identity"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.AspNetCore.Identity.Test.xUnit", "qckdev.AspNetCore.Identity.Test.xUnit\qckdev.AspNetCore.Identity.Test.xUnit.csproj", "{801E92D9-70FC-4F8E-B490-AB56340F92DD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{FA694A22-2A8A-4ADF-BCE6-E08914DBC420}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "miauth-core", "examples\miauth-core\miauth-core.csproj", "{961EAD3A-16B9-43DE-9702-F130C4E31446}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,9 +25,16 @@ Global
 		{801E92D9-70FC-4F8E-B490-AB56340F92DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{801E92D9-70FC-4F8E-B490-AB56340F92DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{801E92D9-70FC-4F8E-B490-AB56340F92DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{961EAD3A-16B9-43DE-9702-F130C4E31446}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{961EAD3A-16B9-43DE-9702-F130C4E31446}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{961EAD3A-16B9-43DE-9702-F130C4E31446}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{961EAD3A-16B9-43DE-9702-F130C4E31446}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{961EAD3A-16B9-43DE-9702-F130C4E31446} = {FA694A22-2A8A-4ADF-BCE6-E08914DBC420}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B803C1B8-BDC2-4ED5-8862-D223FFFEA7DC}

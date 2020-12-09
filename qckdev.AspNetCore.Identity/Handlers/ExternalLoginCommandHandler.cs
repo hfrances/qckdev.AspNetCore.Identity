@@ -11,6 +11,8 @@ using System.Linq;
 using System.Security.Claims;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Collections.Generic;
+using qckdev.Linq;
 
 namespace qckdev.AspNetCore.Identity.Handlers
 {
@@ -59,26 +61,47 @@ namespace qckdev.AspNetCore.Identity.Handlers
                         user = IdentityManager.CreateInstanceUser();
                         user.Email = providerToken.Email;
                         user.UserName = providerToken.Email;
-                        UserHelper.PendingToConfirmExternalUsers.Add(new PendingToConfirmExternalUser()
-                        {
-                            RequestId = requestId,
-                            RequestDate = DateTime.Now,
-                            User = user,
-                            UserLoginInfo = loginInfo
-                        });
 
-                        var createUserToken =
+                        var userArgsType = typeof(CreateUserArgs<>).MakeGenericType(user.GetType());
+                        IEnumerable<string> roles = new string[] { };
+                        CustomizableActionHelper.GetCustomizers<ExternalLoginCommand>(this.Services, userArgsType)
+                            .ForEach(x =>
+                            {
+                                var args = (ICreateUserArgs)qckdev.Reflection.ReflectionHelper.CreateInstance(userArgsType, user, roles);
+
+                                x.Customize(request, args);
+                                roles = args.Roles; // Keep for next iteration.
+                            });
+                        
+                        if (!user.EmailConfirmed)
+                        {
+                            UserHelper.PendingToConfirmExternalUsers.Add(new PendingToConfirmExternalUser()
+                            {
+                                RequestId = requestId,
+                                RequestDate = DateTime.Now,
+                                User = user,
+                                UserLoginInfo = loginInfo,
+                                Roles = roles
+                            });
+
+                            var createUserToken =
                             await UserHelper.CreateToken(
                                 this.Services, user,
                                 new[] { Constants.EXTERNALCONFIRMATION_POLICY },
                                 new[] { new Claim(Constants.REQUESTID_CLAIMTYPE, requestId.ToString()) }
                             );
-                        return new TokenToConfirmExternalUserViewModel()
+                            return new TokenToConfirmExternalUserViewModel()
+                            {
+                                AccessToken = createUserToken.AccessToken,
+                                Expired = createUserToken.Expired,
+                                NewUserData = UserHelper.GetUserData(user)
+                            };
+                        }
+                        else
                         {
-                            AccessToken = createUserToken.AccessToken,
-                            Expired = createUserToken.Expired,
-                            NewUserData = UserHelper.GetUserData(user)
-                        };
+                            user = await CreateUserHelper.CreateExternalUser(this.Services, user, roles, loginInfo);
+                            result = IdentityResult.Success;
+                        }
                     }
                     else
                     {

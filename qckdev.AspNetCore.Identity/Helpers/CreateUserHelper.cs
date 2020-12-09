@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using qckdev.Linq;
+using qckdev.AspNetCore.Identity.Policies;
 
 namespace qckdev.AspNetCore.Identity.Helpers
 {
@@ -47,7 +49,6 @@ namespace qckdev.AspNetCore.Identity.Helpers
                 IEnumerable<string> roles = new string[] { };
                 CustomizableActionHelper.GetCustomizers
                         <TCreateUserCommand, CreateUserCommand>(services, userArgsType)
-                    .ToList()
                     .ForEach(x =>
                     {
                         var args = (ICreateUserArgs)qckdev.Reflection.ReflectionHelper.CreateInstance(userArgsType, user, roles);
@@ -65,6 +66,7 @@ namespace qckdev.AspNetCore.Identity.Helpers
                     {
                         if (!user.EmailConfirmed)
                         {
+                            await identityManager.AddToRoleAsync(user, GuestAuthorizationHandler.POLICY_NAME);
                             await GenerateAndSendEmailConfirmationAsync(services, user);
                         }
                         return user;
@@ -103,5 +105,36 @@ namespace qckdev.AspNetCore.Identity.Helpers
             return token;
         }
 
+
+        public static async Task<IdentityUser> CreateExternalUser(IServiceProvider services, IdentityUser user, IEnumerable<string> roles, UserLoginInfo userLoginInfo)
+        {
+            var identityManager = services.GetService<IIdentityManager>();
+            IdentityResult result;
+
+            user.EmailConfirmed = true;
+            result = await identityManager.CreateUserAsync(user);
+            if (result.Succeeded)
+            {
+                await identityManager.AddToRolesAsync(user, roles);
+                result = await identityManager.AddLoginAsync(user, userLoginInfo);
+                if (result.Succeeded)
+                {
+                    return user;
+                }
+                else
+                {
+                    throw new AggregateException(
+                        $"Error adding {userLoginInfo.LoginProvider} login for {user.Email}. See inner exceptions.",
+                        result.Errors.Select(err => new Exception(err.Description)));
+                }
+            }
+            else
+            {
+                throw new AggregateException(
+                    $"Error creating user for '{user.Email}'. See inner exceptions.",
+                    result.Errors.Select(err => new Exception(err.Description)));
+            }
+        }
     }
+
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
+using System.Collections.Generic;
 
 namespace qckdev.AspNetCore.Identity.Helpers
 {
@@ -10,6 +11,7 @@ namespace qckdev.AspNetCore.Identity.Helpers
         public DateTime RequestDate { get; set; }
         public IdentityUser User { get; set; }
         public UserLoginInfo UserLoginInfo { get; set; }
+        public IEnumerable<string> Roles { get; set; }
 
     }
 }

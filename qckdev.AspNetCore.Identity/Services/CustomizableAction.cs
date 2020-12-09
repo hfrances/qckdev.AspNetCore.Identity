@@ -1,10 +1,7 @@
 ﻿
-using System;
-
 namespace qckdev.AspNetCore.Identity.Services
 {
-    public abstract class CustomizableAction<TParameter, TValue> :
-        ICustomizableAction, ICustomizableAction<TParameter, TValue>
+    public abstract class CustomizableAction<TParameter, TValue> : ICustomizableAction<TParameter, TValue>
     {
 
         void ICustomizableAction.Customize(object parameter, object value)

@@ -30,14 +30,13 @@ namespace qckdev.AspNetCore.Identity.Handlers
             IOptionsMonitor<JwtBearerMoreOptions> jwtBearerMoreOptions
         )
         {
-            this.Services = Services;
+            this.Services = services;
             this.CurrentSessionService = currentSessionService;
             this.IdentityManager = identityManager;
         }
 
         public async Task<TokenViewModel> Handle(ConfirmExternalUserCommand request, CancellationToken cancellationToken)
         {
-            IdentityResult result;
             var requestId =
                 Guid.Parse(CurrentSessionService.CurrentUser?.Claims
                     .FirstOrDefault(x => x.Type == Constants.REQUESTID_CLAIMTYPE)
@@ -47,36 +46,9 @@ namespace qckdev.AspNetCore.Identity.Handlers
             UserHelper.PendingToConfirmExternalUsers.Remove(pendingRequest);
             UserHelper.SetUserData(pendingRequest.User, request.NewUserData);
             pendingRequest.User.EmailConfirmed = true;
-            result = await IdentityManager.CreateUserAsync(pendingRequest.User);
-            if (result.Succeeded)
-            {
-                if (result.Succeeded)
-                {
-                    result = await IdentityManager.AddLoginAsync(pendingRequest.User, pendingRequest.UserLoginInfo);
-                    if (result.Succeeded)
-                    {
-                        return await UserHelper.CreateToken(this.Services, pendingRequest.User);
-                    }
-                    else
-                    {
-                        throw new AggregateException(
-                            $"Error adding {pendingRequest.UserLoginInfo.LoginProvider} login for {pendingRequest.User.Email}. See inner exceptions.",
-                            result.Errors.Select(err => new Exception(err.Description)));
-                    }
-                }
-                else
-                {
-                    throw new AggregateException(
-                        $"Error creating user for '{pendingRequest.User.Email}'. See inner exceptions.",
-                        result.Errors.Select(err => new Exception(err.Description)));
-                }
-            }
-            else
-            {
-                throw new AggregateException(
-                    $"Error confirming user for '{pendingRequest.User.Email}'. See inner exceptions.",
-                    result.Errors.Select(err => new Exception(err.Description)));
-            }
+
+            await CreateUserHelper.CreateExternalUser(this.Services, pendingRequest.User, pendingRequest.Roles, pendingRequest.UserLoginInfo);
+            return await UserHelper.CreateToken(this.Services, pendingRequest.User);
         }
     }
 }

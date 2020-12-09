@@ -19,15 +19,11 @@ namespace qckdev.AspNetCore.Identity.Test.xUnit.Infrastructure
     {
 
         public string DatabaseName { get; }
-        public Services.HttpContextAccessor HttpContextAccessor { get; }
         public ServiceProvider ServiceProvider { get; private set; }
 
-        CurrentSessionService CurrentSessionService { get; }
 
         private ServiceProviderFixture()
         {
-            this.HttpContextAccessor = new Services.HttpContextAccessor();
-            this.CurrentSessionService = new CurrentSessionService();
             this.DatabaseName = Guid.NewGuid().ToString();
         }
 
@@ -36,27 +32,36 @@ namespace qckdev.AspNetCore.Identity.Test.xUnit.Infrastructure
             var services = new ServiceCollection();
 
             services
-                    .AddApplication()
-                    .AddInfrastructure<TIdentityUser>(options =>
-                        options.UseInMemoryDatabase(this.DatabaseName)
+                .AddApplication()
+                .AddInfrastructure<TIdentityUser>(options =>
+                    options.UseInMemoryDatabase(this.DatabaseName)
+                )
+                .AddDataInitializer<Data.DataInitialization>()
+                .AddAuthentication()
+                    .AddJwtBearer(
+                        new JwtTokenConfiguration() { Key = Guid.NewGuid().ToString(), AccessExpireSeconds = 300 }
                     )
-                    .AddDataInitializer<Data.DataInitialization>()
-                    .AddAuthentication()
-                        .AddJwtBearer(
-                            new JwtTokenConfiguration() { Key = Guid.NewGuid().ToString(), AccessExpireSeconds = 300 }
-                        );
-            services
+                    .AddTest()
+                    .AddTestAuthorizationFlow()
+                    .Up()
                 .CustomizeAction<CreateUserCommand, CreateUserArgs<TIdentityUser>>(
-                        (request, args) =>
-                        {
-                            args.User.EmailConfirmed = true;
-                            args.Roles = new string[] { "User", "Guest" };
-                        })
-                ;
+                    (request, args) =>
+                    {
+                        args.User.EmailConfirmed = true;
+                        args.Roles = new string[] { "User" };
+                    })
+                .CustomizeAction<ExternalLoginCommand, CreateUserArgs<TIdentityUser>>(
+                    (request, args) =>
+                    {
+                        args.Roles = new string[] { "User" };
+                    })
+            ;
 
-            // Para TESTING.
-            services.AddSingleton<ICurrentSessionService>(this.CurrentSessionService);
-            services.AddTransient<AuthController>();
+            // For TESTING.
+            services
+                .AddSingleton<ICurrentSessionService, TestCurrentSessionService>()
+                .AddTransient<AuthController>()
+            ;
 
             this.ServiceProvider = services.BuildServiceProvider();
             foreach (var initializer in ServiceProvider.GetServices<IDataInitializer>())
@@ -83,9 +88,14 @@ namespace qckdev.AspNetCore.Identity.Test.xUnit.Infrastructure
             cache.TryAdd(Options.DefaultName, options.Get(name));
         }
 
-        public void SetUserId(string value)
+        public void SetAccessToken(string value)
         {
-            CurrentSessionService.SetUserId(value);
+            GetCurrentSessionService().SetAccessToken(value);
+        }
+
+        private TestCurrentSessionService GetCurrentSessionService()
+        {
+            return (TestCurrentSessionService)ServiceProvider.GetService<ICurrentSessionService>();
         }
 
         public void Dispose()

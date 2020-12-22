@@ -62,11 +62,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using qckdev.AspNetCore.Identity.Infrastructure.Data;
 
-public class MiauthDbContext<TUser> : ApplicationDbContext<TUser>
-	where TUser : IdentityUser
+public class DemoDbContext<TUser> : ApplicationDbContext<TUser>
+    where TUser : IdentityUser
 {
 
-	public DemoDbContext(DbContextOptions options) : base(options) { }
+    public DemoDbContext(DbContextOptions options) : base(options) { }
 
 }
 ```

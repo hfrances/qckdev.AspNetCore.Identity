@@ -1,7 +1,7 @@
 ﻿
 using System.Threading.Tasks;
 
-namespace qckdev.AspNetCore.Identity.Services
+namespace qckdev.AspNetCore.Identity.AuthorizationFlow
 {
     public abstract class AuthorizationFlow
     {

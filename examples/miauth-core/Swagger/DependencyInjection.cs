@@ -31,7 +31,7 @@ namespace miauthcore.Swagger
                     Contact = new OpenApiContact
                     {
                         Name = "Héctor Francés",
-                        Email = "hector.frances@hmy-group.com",
+                        Email = "trancos_agent@hotmail.com",
                     },
                 });
 

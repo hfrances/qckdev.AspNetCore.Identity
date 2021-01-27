@@ -1,4 +1,3 @@
-using miauthcore.AuthenticationFlow;
 using miauthcore.Entities;
 using miauthcore.Infrastructure.Data;
 using miauthcore.Infrastructure.Data.DataInitializer;
@@ -13,9 +12,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using qckdev.AspNetCore.Identity;
-using qckdev.AspNetCore.Identity.Commands;
-using qckdev.AspNetCore.Identity.Helpers;
-using qckdev.AspNetCore.Identity.Infrastructure;
 using qckdev.AspNetCore.Identity.Middleware;
 using System;
 
@@ -75,6 +71,17 @@ namespace miauthcore
         private static void ConfigureService<TUser>(IServiceCollection services, IConfiguration configuration) where TUser : IdentityUser, new()
         {
             var jwtTokenConfiguration = JwtTokenConfiguration.Get(configuration, "Tokens");
+            var googleConfiguration = new
+            {
+                ClientId = configuration["Authentication:Google:ClientId"],
+                ClientSecret = configuration["Authentication:Google:ClientSecret"]
+            };
+            var microsoftConfiguration = new
+            {
+                TenantId = Guid.Parse(configuration["Authentication:Microsoft:TenantId"]),
+                ClientId = configuration["Authentication:Microsoft:ClientId"],
+                ClientSecret = configuration["Authentication:Microsoft:ClientSecret"]
+            };
 
             //Cors Policy
             services.AddCors(opt => opt.AddPolicy("NoCors", builder =>
@@ -97,17 +104,18 @@ namespace miauthcore
                 .AddJwtBearer(jwtTokenConfiguration)
                 .AddGoogle(options =>
                 {
-                    options.ClientId = configuration["Authentication:Google:ClientId"];
-                    options.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+                    options.ClientId = googleConfiguration.ClientId;
+                    options.ClientSecret = googleConfiguration.ClientSecret;
                 })
-                .AddMicrosoftAccount("MSAL", Guid.Parse(configuration["Authentication:Microsoft:TenantId"]),
+                .AddGoogleAuthorizationFlow()
+                .AddMicrosoftAccount("MSAL", microsoftConfiguration.TenantId,
                     options =>
                     {
-                        options.ClientId = configuration["Authentication:Microsoft:ClientId"];
-                        options.ClientSecret = configuration["Authentication:Microsoft:ClientSecret"];
+                        options.ClientId = microsoftConfiguration.ClientId;
+                        options.ClientSecret = microsoftConfiguration.ClientSecret;
                     }
                 )
-                .AddAuthorizationFlow()
+                .AddMicrosoftAuthorizationFlow()
             ;
 
             services.Configure<IdentityOptions>(options =>
@@ -122,16 +130,6 @@ namespace miauthcore
                 options.Password.RequiredLength = 8;
                 options.Password.RequiredUniqueChars = 0;
             });
-
-            services
-                .CustomizeAction<CreateUserCommand, CreateUserArgs<TUser>>(
-                    (request, args) =>
-                    {
-                        args.Roles = new string[] { "User", "Guest" };
-                    }
-                )
-                .CustomizeAction<CreateRootUserCustomization<TUser>>()
-            ;
 
             services.AddSwagger();
             services.AddControllers();

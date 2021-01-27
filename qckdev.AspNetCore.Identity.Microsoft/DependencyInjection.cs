@@ -1,32 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
-using Microsoft.Extensions.DependencyInjection;
-using qckdev.AspNetCore.Identity;
 using System;
 using System.Linq;
 
-namespace miauthcore.AuthenticationFlow
+namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class DependencyInjection
+    public static class QIdentityMicrosoftDependencyInjection
     {
-
-        public static IServiceCollection AddAuthorizationFlow(this IServiceCollection services)
-        {
-            return services
-                .AddAuthorizationFlow<GoogleHandler, GoogleAuthorizationFlow>()
-                .AddAuthorizationFlow<MicrosoftAccountHandler, MicrosoftAuthorizationFlow>()
-            ;
-        }
-
-        public static AuthenticationBuilder AddAuthorizationFlow(this AuthenticationBuilder builder)
-        {
-            builder.Services
-                .AddAuthorizationFlow();
-
-            return builder;
-        }
-
 
         public static AuthenticationBuilder AddMicrosoftAccount(this AuthenticationBuilder builder, Guid tenantId)
         {
@@ -88,7 +68,7 @@ namespace miauthcore.AuthenticationFlow
                 uri = new Uri(new Uri(uri.GetLeftPart(UriPartial.Authority)), string.Join("/", path));
                 return uri.ToString();
             }
-            
+
             options.AuthorizationEndpoint = replaceTenantId(options.AuthorizationEndpoint, tenantId);
             options.TokenEndpoint = replaceTenantId(options.TokenEndpoint, tenantId);
             options.UserInformationEndpoint = replaceTenantId(options.UserInformationEndpoint, tenantId);

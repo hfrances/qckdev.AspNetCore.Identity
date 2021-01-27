@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace qckdev.AspNetCore.Identity
+namespace qckdev.AspNetCore.Identity.AuthorizationFlow
 {
     public sealed class AuthorizationFlowCredential
     {

@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using qckdev.AspNetCore.Identity.Commands;
-using qckdev.AspNetCore.Identity.Controllers;
 using qckdev.AspNetCore.Identity.Helpers;
 using qckdev.AspNetCore.Identity.Infrastructure;
 using qckdev.AspNetCore.Identity.Infrastructure.Data;
@@ -44,23 +42,11 @@ namespace qckdev.AspNetCore.Identity.Test.xUnit.Infrastructure
                     .AddTest()
                     .AddTestAuthorizationFlow()
                     .Up()
-                .CustomizeAction<CreateUserCommand, CreateUserArgs<TIdentityUser>>(
-                    (request, args) =>
-                    {
-                        args.User.EmailConfirmed = true;
-                        args.Roles = new string[] { "User" };
-                    })
-                .CustomizeAction<ExternalLoginCommand, CreateUserArgs<TIdentityUser>>(
-                    (request, args) =>
-                    {
-                        args.Roles = new string[] { "User" };
-                    })
             ;
 
             // For TESTING.
             services
                 .AddSingleton<ICurrentSessionService, TestCurrentSessionService>()
-                .AddTransient<AuthController>()
             ;
 
             this.ServiceProvider = services.BuildServiceProvider();
@@ -72,11 +58,7 @@ namespace qckdev.AspNetCore.Identity.Test.xUnit.Infrastructure
 
         protected virtual async Task OnCreatedAsync()
         {
-            await Task.Run(() =>
-            {
-                //MakeActiveOptions<JwtBearerOptions>(this.ServiceProvider, JwtBearerDefaults.AuthenticationScheme);
-                //MakeActiveOptions<JwtBearerMoreOptions>(this.ServiceProvider, JwtBearerDefaults.AuthenticationScheme);
-            });
+            
         }
 
         protected void MakeActiveOptions<TOptions>(IServiceProvider services, string name) where TOptions : class

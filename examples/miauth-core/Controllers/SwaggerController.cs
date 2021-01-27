@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using qckdev.AspNetCore.Identity;
+using qckdev.AspNetCore.Identity.AuthorizationFlow;
 
 namespace miauthcore.Controllers
 {
@@ -31,7 +32,7 @@ namespace miauthcore.Controllers
 
 
         [HttpGet("{provider}"), Obsolete]
-        public async void Get(string provider)
+        public async Task Get(string provider)
         {
             var authorizationFlow = await AuthorizationFlowProvider.GetAuthorizationFlow(provider);
             var redirectUri = new UriBuilder(HttpContext.Request.GetUri())
@@ -45,7 +46,7 @@ namespace miauthcore.Controllers
         }
 
         [HttpGet("{provider}/authorize")]
-        public async void GetAuthorization(
+        public async Task GetAuthorization(
             string client_id,
             string provider, string response_type,
             string scope, string redirect_uri, string state)

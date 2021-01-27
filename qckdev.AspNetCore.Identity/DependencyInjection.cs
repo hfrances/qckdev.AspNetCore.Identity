@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
+using qckdev.AspNetCore.Identity;
 using qckdev.AspNetCore.Identity.Policies;
 using qckdev.AspNetCore.Identity.Services;
 using System;
@@ -14,9 +15,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace qckdev.AspNetCore.Identity
+namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class DependencyInjection
+    public static class QIdentityDependencyInjection
     {
 
         public static IServiceCollection AddApplication(this IServiceCollection services)
@@ -31,6 +32,15 @@ namespace qckdev.AspNetCore.Identity
             ;
         }
 
+        /// <summary>
+        /// Adds the specified service as a <see cref="ServiceLifetime.Singleton"/> 
+        /// service with the implementationType implementation to the collection if the service
+        /// type hasn't already been registered.
+        /// </summary>
+        /// <typeparam name="TService">The type of the service to register.</typeparam>
+        /// <typeparam name="TImplementation">The implementation type of the service.</typeparam>
+        /// <param name="collection">The <see cref="IServiceCollection"/>.</param>
+        /// <returns></returns>
         public static IServiceCollection TryAddSingleton<TService, TImplementation>(this IServiceCollection collection)
             where TService : class
             where TImplementation : class, TService
@@ -39,6 +49,13 @@ namespace qckdev.AspNetCore.Identity
             return collection;
         }
 
+        /// <summary>
+        /// Adds the specified service as a <see cref="ServiceLifetime.Scoped"/> service to the collection if the service type hasn't already been registered.
+        /// </summary>
+        /// <typeparam name="TService">The type of the service to register.</typeparam>
+        /// <typeparam name="TImplementation">The implementation type of the service.</typeparam>
+        /// <param name="collection">The <see cref="IServiceCollection"/>.</param>
+        /// <returns></returns>
         public static IServiceCollection TryAddScoped<TService, TImplementation>(this IServiceCollection services)
             where TService : class
             where TImplementation : class, TService
@@ -47,6 +64,12 @@ namespace qckdev.AspNetCore.Identity
             return services;
         }
 
+        /// <summary>
+        /// Adds the specified service as a <see cref="ServiceLifetime.Scoped"/> service to the collection if the service type hasn't already been registered.
+        /// </summary>
+        /// <typeparam name="TService">The type of the service to register.</typeparam>
+        /// <param name="collection">The <see cref="IServiceCollection"/>.</param>
+        /// <returns></returns>
         public static IServiceCollection TryAddScoped<TService>(this IServiceCollection services)
             where TService : class
         {
@@ -122,6 +145,12 @@ namespace qckdev.AspNetCore.Identity
             return services;
         }
 
+        /// <summary>
+        /// Returns a new <see cref="AuthorizationPolicy"/> with the same configuration that the original <paramref name="policy"/> and the specified additional <see cref="IAuthorizationRequirement"/>.
+        /// </summary>
+        /// <param name="policy">The original policy</param>
+        /// <param name="additionalRequirements">An array with the additional <see cref="IAuthorizationRequirement"/>.</param>
+        /// <returns></returns>
         public static AuthorizationPolicy Clone(this AuthorizationPolicy policy, params IAuthorizationRequirement[] additionalRequirements)
         {
             var authorizationRequirements =
@@ -133,52 +162,21 @@ namespace qckdev.AspNetCore.Identity
                authorizationRequirements, authenticationSchemes);
         }
 
-        public static IServiceCollection AddAuthorizationFlow<TAuthenticationHandler, TAuthorizationFlow>(this IServiceCollection services)
-            where TAuthenticationHandler : IAuthenticationHandler
-            where TAuthorizationFlow : class, IAuthorizationFlow<TAuthenticationHandler>
-        {
-            return services
-                .TryAddScoped<AuthorizationFlowProvider>()
-                .AddScoped<IAuthorizationFlow<TAuthenticationHandler>, TAuthorizationFlow>();
-        }
-
-        public static AuthenticationBuilder AddAuthorizationFlow<TAuthenticationHandler, TAuthorizationFlow>(this AuthenticationBuilder builder)
-            where TAuthenticationHandler : IAuthenticationHandler
-            where TAuthorizationFlow : class, IAuthorizationFlow<TAuthenticationHandler>
-        {
-            builder.Services
-                .AddAuthorizationFlow<TAuthenticationHandler, TAuthorizationFlow>();
-            return builder;
-        }
-
-        public static IServiceCollection CustomizeAction<TCustomizableAction>(this IServiceCollection services)
-            where TCustomizableAction : class, ICustomizableAction
-        {
-            var tValue = typeof(TCustomizableAction);
-            var tGenericParameter = typeof(ICustomizableAction<,>);
-            var tParameter = tValue
-                .GetInterfaces()
-                .First(x =>
-                    x.GetGenericTypeDefinition() == tGenericParameter
-                );
-            return services.AddSingleton(tParameter, typeof(TCustomizableAction));
-        }
-
-        public static IServiceCollection CustomizeAction<TParameter, TValue>(this IServiceCollection services, Action<TParameter, TValue> action)
-        {
-            return services.CustomizeAction(new GenericCustomizableAction<TParameter, TValue>(action));
-        }
-
-        public static IServiceCollection CustomizeAction<TParameter, TValue>(this IServiceCollection services, ICustomizableAction<TParameter, TValue> action)
-        {
-            return services.AddSingleton(action);
-        }
-
+        /// <summary>
+        /// Returns the <see cref="IServiceCollection"/> contained in the current <see cref="AuthenticationBuilder"/> object.
+        /// </summary>
+        /// <param name="builder">Current object</param>
+        /// <returns></returns>
         public static IServiceCollection Up(this AuthenticationBuilder builder)
         {
             return builder.Services;
         }
 
+        /// <summary>
+        /// Returns the <see cref="IServiceCollection"/> contained in the current <see cref="IdentityBuilder"/> object.
+        /// </summary>
+        /// <param name="builder">Current object</param>
+        /// <returns></returns>
         public static IServiceCollection Up(this IdentityBuilder builder)
         {
             return builder.Services;

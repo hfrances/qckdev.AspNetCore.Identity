@@ -15,9 +15,7 @@ namespace qckdev.AspNetCore.Identity.Helpers
 {
     static class UserHelper
     {
-        public static readonly List<PendingToConfirmExternalUser> PendingToConfirmExternalUsers
-            = new List<PendingToConfirmExternalUser>();
-
+        
         public static async Task<TokenViewModel> CreateToken(IServiceProvider services, IdentityUser user, string schemeName = JwtBearerDefaults.AuthenticationScheme)
         {
             var identityManager = services.GetService<IIdentityManager>();

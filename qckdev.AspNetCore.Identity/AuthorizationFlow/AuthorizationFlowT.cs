@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
-namespace qckdev.AspNetCore.Identity.Services
+namespace qckdev.AspNetCore.Identity.AuthorizationFlow
 {
 
     public abstract class AuthorizationFlow<TOptions, TAuthenticationHandler>

@@ -5,12 +5,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using qckdev.AspNetCore.Identity.Commands;
-using qckdev.AspNetCore.Identity.Controllers;
-using qckdev.AspNetCore.Identity.Helpers;
-using qckdev.AspNetCore.Identity.Infrastructure;
-using qckdev.AspNetCore.Identity.Infrastructure.Data;
-using qckdev.AspNetCore.Identity.Services;
+using qckdev.AspNetCore.Identity;
+using qckdev.AspNetCore.Identity.Middleware;
 
 public void ConfigureServices(IServiceCollection services)
 {
@@ -32,6 +28,7 @@ public void ConfigureServices(IServiceCollection services)
             options.ClientId = configuration["Authentication:Google:ClientId"];
             options.ClientSecret = configuration["Authentication:Google:ClientSecret"];
         })
+		.AddGoogleAuthorizationFlow()
         .AddMicrosoftAccount("MSAL", Guid.Parse(configuration["Authentication:Microsoft:TenantId"]),
             options =>
             {
@@ -39,7 +36,7 @@ public void ConfigureServices(IServiceCollection services)
                 options.ClientSecret = configuration["Authentication:Microsoft:ClientSecret"];
             }
         )
-        .AddAuthorizationFlow()
+        .AddMicrosoftAuthorizationFlow()
     ;
 
     services.AddControllers();

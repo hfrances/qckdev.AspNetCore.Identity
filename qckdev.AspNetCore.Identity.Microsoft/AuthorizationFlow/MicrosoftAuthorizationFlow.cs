@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using qckdev.AspNetCore.Identity;
 using qckdev.AspNetCore.Identity.Helpers;
-using qckdev.AspNetCore.Identity.Services;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -11,7 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace miauthcore.AuthenticationFlow
+namespace qckdev.AspNetCore.Identity.AuthorizationFlow.Microsoft
 {
     public class MicrosoftAuthorizationFlow : AuthorizationFlow<MicrosoftAccountOptions, MicrosoftAccountHandler>
     {

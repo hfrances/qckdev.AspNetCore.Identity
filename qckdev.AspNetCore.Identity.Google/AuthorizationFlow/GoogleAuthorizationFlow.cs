@@ -4,13 +4,11 @@ using Google.Apis.Auth.OAuth2.Flows;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using qckdev.AspNetCore.Identity;
-using qckdev.AspNetCore.Identity.Services;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace miauthcore.AuthenticationFlow
+namespace qckdev.AspNetCore.Identity.AuthorizationFlow.Google
 {
     public class GoogleAuthorizationFlow : AuthorizationFlow<GoogleOptions, GoogleHandler>
     {

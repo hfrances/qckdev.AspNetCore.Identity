@@ -28,7 +28,7 @@ public void ConfigureServices(IServiceCollection services)
             options.ClientId = configuration["Authentication:Google:ClientId"];
             options.ClientSecret = configuration["Authentication:Google:ClientSecret"];
         })
-		.AddGoogleAuthorizationFlow()
+	.AddGoogleAuthorizationFlow()
         .AddMicrosoftAccount("MSAL", Guid.Parse(configuration["Authentication:Microsoft:TenantId"]),
             options =>
             {

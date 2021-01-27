@@ -14,7 +14,7 @@ public void ConfigureServices(IServiceCollection services)
 
     services
         .AddApplication()
-        .AddInfrastructure<TUser, DemoDbContext<TUser>>(options =>
+        .AddInfrastructure<TUser, MiauthDbContext<TUser>>(options =>
             options.UseInMemoryDatabase("miauth")
         )
         .AddDataInitializer<DataInitialization>()

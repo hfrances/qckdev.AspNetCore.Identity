@@ -44,14 +44,14 @@ public void ConfigureServices(IServiceCollection services)
 
 public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 {
-    [...]
+    (...)
 
     app.UseMiddleware<HandlerExceptionMiddleware>();
     app.UseRouting();
     app.UseAuthentication();
     app.UseAuthorization();
 
-    [...]
+    (...)
 
     app.DataInitialization();
 }
@@ -62,7 +62,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using qckdev.AspNetCore.Identity.Infrastructure.Data;
 
-public class DemoDbContext<TUser> : ApplicationDbContext<TUser>
+public class MiauthDbContext<TUser> : ApplicationDbContext<TUser>
     where TUser : IdentityUser
 {
 
@@ -99,7 +99,7 @@ public class DataInitialization : IDataInitializer
 
 ```json
 {
-  [...]
+  (...)
   "Tokens": {
     "Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     "ClientId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",

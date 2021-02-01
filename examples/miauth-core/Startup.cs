@@ -1,3 +1,4 @@
+using MediatR;
 using miauthcore.Entities;
 using miauthcore.Infrastructure.Data;
 using miauthcore.Infrastructure.Data.DataInitializer;
@@ -14,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using qckdev.AspNetCore.Identity;
 using qckdev.AspNetCore.Identity.Middleware;
 using System;
+using System.Reflection;
 
 namespace miauthcore
 {
@@ -31,13 +33,19 @@ namespace miauthcore
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDisableCors();
+
+            services.AddMediatR(Assembly.GetExecutingAssembly());
             ConfigureService<MiauthUser>(services, this.Configuration);
+
+            services.AddSwagger();
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseCors("NoCors");
+            app.UseDisableCors();
 
             if (env.IsDevelopment())
             {
@@ -71,30 +79,13 @@ namespace miauthcore
         private static void ConfigureService<TUser>(IServiceCollection services, IConfiguration configuration) where TUser : IdentityUser, new()
         {
             var jwtTokenConfiguration = JwtTokenConfiguration.Get(configuration, "Tokens");
-            var googleConfiguration = new
-            {
-                ClientId = configuration["Authentication:Google:ClientId"],
-                ClientSecret = configuration["Authentication:Google:ClientSecret"]
-            };
-            var microsoftConfiguration = new
-            {
-                TenantId = Guid.Parse(configuration["Authentication:Microsoft:TenantId"]),
-                ClientId = configuration["Authentication:Microsoft:ClientId"],
-                ClientSecret = configuration["Authentication:Microsoft:ClientSecret"]
-            };
-
-            //Cors Policy
-            services.AddCors(opt => opt.AddPolicy("NoCors", builder =>
-            {
-                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-            }));
+            var googleConfiguration = configuration.GetSection("Authentication:Google").Get<Model.GoogleAuthenticationConfig>();
+            var microsoftConfiguration = configuration.GetSection("Authentication:Microsoft").Get<Model.MicrosoftAuthenticationConfig>();
 
             services
                 .AddApplication()
                 .AddInfrastructure<TUser, MiauthDbContext<TUser>>(options =>
                     options.UseInMemoryDatabase("miauth")
-                //  options.UseMySql(Configuration.GetConnectionString("DefaultConnection"),
-                //      b => b.MigrationsAssembly(typeof(ApplicationDbContext<TIdentityUser>).Assembly.FullName)
                 )
                 .AddDataInitializer<DataInitialization>()
             ;
@@ -108,7 +99,7 @@ namespace miauthcore
                     options.ClientSecret = googleConfiguration.ClientSecret;
                 })
                 .AddGoogleAuthorizationFlow()
-                .AddMicrosoftAccount("MSAL", microsoftConfiguration.TenantId,
+                .AddMicrosoftAccount("MSAL", microsoftConfiguration.TenantId ?? Guid.Empty,
                     options =>
                     {
                         options.ClientId = microsoftConfiguration.ClientId;
@@ -131,8 +122,6 @@ namespace miauthcore
                 options.Password.RequiredUniqueChars = 0;
             });
 
-            services.AddSwagger();
-            services.AddControllers();
         }
 
     }

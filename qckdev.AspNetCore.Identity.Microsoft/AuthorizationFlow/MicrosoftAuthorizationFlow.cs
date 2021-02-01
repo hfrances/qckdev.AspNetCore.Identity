@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using qckdev.AspNetCore.Identity.Exceptions;
 using qckdev.AspNetCore.Identity.Helpers;
 using System;
 using System.Collections.Generic;
@@ -14,12 +17,16 @@ namespace qckdev.AspNetCore.Identity.AuthorizationFlow.Microsoft
     public class MicrosoftAuthorizationFlow : AuthorizationFlow<MicrosoftAccountOptions, MicrosoftAccountHandler>
     {
 
+        ILogger<MicrosoftAuthorizationFlow> Logger { get; }
 
         public MicrosoftAuthorizationFlow(
                 IHttpContextAccessor httpContextAccessor,
-                IOptionsMonitor<MicrosoftAccountOptions> authenticationOptions
+                IOptionsMonitor<MicrosoftAccountOptions> authenticationOptions,
+                ILogger<MicrosoftAuthorizationFlow> logger
             ) : base(httpContextAccessor, authenticationOptions)
-        { }
+        {
+            this.Logger = logger;
+        }
 
         public override void OnAuthorization(
             string response_type, string scopes, string redirectUri, string state)
@@ -48,10 +55,7 @@ namespace qckdev.AspNetCore.Identity.AuthorizationFlow.Microsoft
             try
             {
                 var uri = new Uri(microsoftOptions.TokenEndpoint);
-                using (var client = new HttpClient()
-                {
-                    BaseAddress = new Uri(uri.GetLeftPart(UriPartial.Authority))
-                })
+                using (var client = new HttpClient() { BaseAddress = new Uri(uri.GetLeftPart(UriPartial.Authority)) })
                 {
                     var formData = new Dictionary<string, string>()
                     {
@@ -67,7 +71,7 @@ namespace qckdev.AspNetCore.Identity.AuthorizationFlow.Microsoft
                     }
 
                     // https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-saml-tokens
-                    var rdo = await HttpClientHelper.Fetch<dynamic>(
+                    var rdo = await HttpClientHelper.Fetch<dynamic, OpenIdConnectMessage>(
                         client, HttpMethod.Post, uri.LocalPath,
                         new FormUrlEncodedContent(formData));
                     var accessToken = (string)rdo.access_token;
@@ -86,8 +90,8 @@ namespace qckdev.AspNetCore.Identity.AuthorizationFlow.Microsoft
                         UserId = subject,
                         Email = email,
                         DisplayName = name,
-                        FirstName = givenName,
-                        LastName = familyName,
+                        GivenName = givenName,
+                        FamilyName = familyName,
                         TokenType = rdo.token_type,
                         IdToken = rdo.id_token,
                         AccessToken = accessToken,
@@ -98,9 +102,14 @@ namespace qckdev.AspNetCore.Identity.AuthorizationFlow.Microsoft
                     };
                 }
             }
+            catch (FetchFailedException<OpenIdConnectMessage> ex)
+            {
+                Logger.LogError(ex, ex.Message);
+                throw new AuthorizationFlowException(ex.Error.Error, ex.Error.ErrorDescription, ex.Error.ErrorUri);
+            }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
+                Logger.LogError(ex, ex.Message);
                 throw;
             }
         }

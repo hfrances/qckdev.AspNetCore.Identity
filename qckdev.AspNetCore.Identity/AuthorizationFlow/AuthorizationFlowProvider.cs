@@ -27,12 +27,19 @@ namespace qckdev.AspNetCore.Identity.AuthorizationFlow
             var schemeProviders = await AuthenticationSchemeProvider.GetAllSchemesAsync();
             var schemeProvider = schemeProviders.FirstOrDefault(x =>
                     x.Name.Equals(schemeName, StringComparison.InvariantCultureIgnoreCase));
-            var authorizationFlowType = typeof(IAuthorizationFlow<>)
-                .MakeGenericType(schemeProvider.HandlerType);
-            var authorizationFlow = (AuthorizationFlow)ServiceProvider.GetService(authorizationFlowType);
 
-            authorizationFlow.SetSchemeName(schemeProvider.Name);
-            return authorizationFlow;
+            if (schemeProvider == null)
+            {
+                throw new ArgumentOutOfRangeException(nameof(schemeName), $"Provider not found: '{schemeName}'");
+            }
+            else
+            {
+                var authorizationFlowType = typeof(IAuthorizationFlow<>).MakeGenericType(schemeProvider.HandlerType);
+                var authorizationFlow = (AuthorizationFlow)ServiceProvider.GetService(authorizationFlowType);
+
+                authorizationFlow.SetSchemeName(schemeProvider.Name);
+                return authorizationFlow;
+            }
         }
 
     }

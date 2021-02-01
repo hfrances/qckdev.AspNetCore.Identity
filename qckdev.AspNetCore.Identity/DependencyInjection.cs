@@ -1,7 +1,7 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +12,6 @@ using qckdev.AspNetCore.Identity.Policies;
 using qckdev.AspNetCore.Identity.Services;
 using System;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -23,7 +22,6 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             return services
-                .AddMediatR(Assembly.GetExecutingAssembly())
                 .TryAddSingleton<ISystemClock, SystemClock>()
                 .TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>()
                 .AddScoped<ICurrentSessionService, CurrentSessionService>()
@@ -143,6 +141,30 @@ namespace Microsoft.Extensions.DependencyInjection
                         policy.AddRequirements(new AllowGuestAuthorizationRequirement(policyName)));
                 });
             return services;
+        }
+
+        /// <summary>
+        /// Disables cross-origin resource sharing services to the specified <see cref="IServiceCollection"/>.
+        /// </summary>
+        /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
+        /// <returns>
+        /// The <see cref="IServiceCollection"/> so that additional calls can be chained.
+        /// </returns>
+        public static IServiceCollection AddDisableCors(this IServiceCollection services)
+        {
+            return services.AddCors(opt => opt.AddPolicy(Constants.DISABLE_CORS_POLICY, builder =>
+                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
+            ));
+        }
+
+        /// <summary>
+        /// Adds a CORS middleware to your web application pipeline to allow all cross domain requests.
+        /// </summary>
+        /// <param name="app">The <see cref="IApplicationBuilder"/> passed to your Configure method.</param>
+        /// <returns>The original <paramref name="app"/> parameter</returns>
+        public static IApplicationBuilder UseDisableCors(this IApplicationBuilder app)
+        {
+            return app.UseCors(Constants.DISABLE_CORS_POLICY);
         }
 
         /// <summary>

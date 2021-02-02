@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using qckdev.AspNetCore.Identity;
+using qckdev.AspNetCore.Identity.JwtBearer;
 using qckdev.AspNetCore.Identity.Middleware;
 using System;
 using System.Reflection;
@@ -78,7 +79,7 @@ namespace miauthcore
 
         private static void ConfigureService<TUser>(IServiceCollection services, IConfiguration configuration) where TUser : IdentityUser, new()
         {
-            var jwtTokenConfiguration = JwtTokenConfiguration.Get(configuration, "Tokens");
+            var jwtTokenConfiguration = configuration.GetSection("Tokens").Get<JwtTokenConfiguration>();
             var googleConfiguration = configuration.GetSection("Authentication:Google").Get<Model.GoogleAuthenticationConfig>();
             var microsoftConfiguration = configuration.GetSection("Authentication:Microsoft").Get<Model.MicrosoftAuthenticationConfig>();
 

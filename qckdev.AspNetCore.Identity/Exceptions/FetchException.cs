@@ -26,10 +26,5 @@ namespace qckdev.AspNetCore.Identity.Exceptions
             this.Error = error;
         }
 
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            base.GetObjectData(info, context);
-        }
-
     }
 }

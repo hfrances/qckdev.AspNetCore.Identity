@@ -1,18 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.IdentityModel.Tokens;
 using qckdev.AspNetCore.Identity;
 using qckdev.AspNetCore.Identity.Policies;
 using qckdev.AspNetCore.Identity.Services;
 using System;
 using System.Linq;
-using System.Text;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -75,57 +72,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return services;
         }
 
-        public static AuthenticationBuilder AddJwtBearer(this AuthenticationBuilder builder, JwtTokenConfiguration configuration)
-        {
-            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration.Key));
-
-            return builder.AddJwtBearer(
-                options =>
-                {
-                    options.RequireHttpsMetadata = false;
-                    options.SaveToken = true;
-                    options.TokenValidationParameters = new TokenValidationParameters()
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = key,
-                        ValidateAudience = false,
-                        ValidateIssuer = false,
-                        ValidateLifetime = true,
-                        ClockSkew = TimeSpan.Zero
-                    };
-                },
-                moreOptions =>
-                {
-                    moreOptions.TokenLifeTimespan = TimeSpan.FromSeconds(configuration.AccessExpireSeconds);
-                    moreOptions.ClientId = configuration.ClientId;
-                }
-            );
-        }
-
-        public static AuthenticationBuilder AddJwtBearer(this AuthenticationBuilder builder, Action<JwtBearerOptions> configureOptions, Action<JwtBearerMoreOptions> configureMoreOptions)
-        {
-            return AddJwtBearer(builder, JwtBearerDefaults.AuthenticationScheme, configureOptions, configureMoreOptions);
-        }
-
-        public static AuthenticationBuilder AddJwtBearer(this AuthenticationBuilder builder, string authenticationScheme, Action<JwtBearerOptions> configureOptions, Action<JwtBearerMoreOptions> configureMoreOptions)
-        {
-            return AddJwtBearer(builder, authenticationScheme, null, configureOptions, configureMoreOptions);
-        }
-
-        public static AuthenticationBuilder AddJwtBearer(this AuthenticationBuilder builder, string authenticationScheme, string displayName, Action<JwtBearerOptions> configureOptions, Action<JwtBearerMoreOptions> configureMoreOptions)
-        {
-            builder.Services.Configure(authenticationScheme, configureMoreOptions);
-            return builder.AddJwtBearer(authenticationScheme, displayName, configureOptions);
-        }
-
-        public static IdentityBuilder AddJwtRefreshTokenProvider(this IdentityBuilder builder)
-        {
-            var userType = builder.UserType;
-            var provider = typeof(JwtRefreshTokenProvider<>).MakeGenericType(userType);
-
-            return builder.AddTokenProvider(nameof(JwtRefreshTokenProvider<IdentityUser>), provider);
-        }
-
+        
         public static IServiceCollection AddGuestAuthorization(this IServiceCollection services, string policyName)
         {
             services

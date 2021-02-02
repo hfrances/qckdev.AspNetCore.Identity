@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using System.Threading.Tasks;
 
-namespace qckdev.AspNetCore.Identity.Services
+namespace qckdev.AspNetCore.Identity.JwtBearer
 {
 
     sealed class JwtRefreshTokenProvider<TUser> : IUserTwoFactorTokenProvider<TUser>

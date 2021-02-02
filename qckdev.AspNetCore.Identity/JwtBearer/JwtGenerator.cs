@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using qckdev.Linq;
 
-namespace qckdev.AspNetCore.Identity.Helpers
+namespace qckdev.AspNetCore.Identity.JwtBearer
 {
     static class JwtGenerator
     {

@@ -3,6 +3,8 @@ using System.Runtime.Serialization;
 
 namespace qckdev.AspNetCore.Identity.AuthorizationFlow
 {
+
+    [Serializable]
     public class AuthorizationFlowException : Exception
     {
 
@@ -10,8 +12,6 @@ namespace qckdev.AspNetCore.Identity.AuthorizationFlow
         public string ErrorDescription { get; }
         public string ErrorUri { get; }
 
-        //public new string Message { get => base.Message; }
-        
         public AuthorizationFlowException(string error, string errorDescription, string errorUri) : base(error)
         {
             this.Error = error;
@@ -24,11 +24,6 @@ namespace qckdev.AspNetCore.Identity.AuthorizationFlow
             this.Error = error;
             this.ErrorDescription = errorDescription;
             this.ErrorUri = errorUri;
-        }
-
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            base.GetObjectData(info, context);
         }
 
     }

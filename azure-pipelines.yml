@@ -14,9 +14,9 @@ variables:
     value: '**/*.sln'
   - name: BuildParameters.TestProjects
     value: '**/*Tests/*.csproj'
-  - name: BuildParameters.projectKey
+  - name: BuildParameters.ProjectKey
     value: qckdev.AspNetCore.Identity
-  - name: BuildParameters.projectName
+  - name: BuildParameters.ProjectName
     value: qckdev.AspNetCore.Identity
   - name: BuildConfiguration
     value: 'Release'
@@ -65,7 +65,6 @@ steps:
    
       write-output "##vso[task.addattachment type=Distributedtask.Core.Summary;name=Environment Variables;]$fileName"
 
-
 - task: PowerShell@2
   displayName: 'ECHO projects'
   inputs:
@@ -87,7 +86,7 @@ steps:
     scannerMode: 'MSBuild'
     projectKey: '$(BuildParameters.ProjectKey)'
     projectName: '$(BuildParameters.ProjectName)'
-    projectVersion: '$(MainProject.Version)'
+    projectVersion: '$(MainProject2.Version)'
 
 - task: DotNetCoreCLI@2
   displayName: Build

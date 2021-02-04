@@ -48,8 +48,7 @@ steps:
       $out = ""
       Foreach ($v in $var) {$out = $out + "`t{0,-28} = {1,-28}`n" -f $v.Name, $v.Value}
       
-      [string[]] $pieces = $env:BUILD_ARTIFACTSTAGINGDIRECTORY, "variable-list.md"
-      $fileName = Join-Path $pieces
+      $fileName = Join-Path $env:BUILD_ARTIFACTSTAGINGDIRECTORY "variable-list.md"
       write-output "dump variables on $fileName"
       set-content $fileName $out
    

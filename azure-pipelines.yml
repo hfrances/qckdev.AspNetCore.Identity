@@ -10,8 +10,41 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
+  projectkey: qckdev.AspNetCore.Identity
+  projectName: qckdev.AspNetCore.Identity
   buildConfiguration: 'Release'
 
 steps:
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+- task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: restore
+    projects: '$(Parameters.RestoreBuildProjects)'
+- task: ProjectVarReader@0
+  inputs:
+    searchPattern: '**\$(ProjectName).??proj'
+    variablePrefix: 'MainProject'
+    propertyName: 'Version'
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'SonarCloud'
+    organization: 'hfrances-github'
+    scannerMode: 'MSBuild'
+    projectKey: '$(ProjectKey)'
+    projectName: '$(ProjectName)'
+    projectVersion: '$(MainProject.Version)'
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    projects: '$(Parameters.RestoreBuildProjects)'
+    arguments: '--configuration $(BuildConfiguration)'
+- task: DotNetCoreCLI@2
+  displayName: Test
+  inputs:
+    command: test
+    projects: '$(Parameters.TestProjects)'
+    arguments: '--configuration $(BuildConfiguration)'
+- task: SonarCloudAnalyze@1
+- task: SonarCloudPublish@1
+  inputs:
+    pollingTimeoutSec: '300'

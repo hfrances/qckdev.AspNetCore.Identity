@@ -79,7 +79,7 @@ steps:
   displayName: Restore
   inputs:
     command: restore
-    projects: '$(Parameters.RestoreBuildProjects)'
+    projects: '**/*.??proj'
 
 - task: SonarCloudPrepare@1
   inputs:

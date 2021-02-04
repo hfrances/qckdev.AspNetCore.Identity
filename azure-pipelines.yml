@@ -72,7 +72,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $files = Get-ChildItem -recurse $(Parameters.RestoreBuildProjects)
+      $files = Get-ChildItem -recurse "$(Parameters.RestoreBuildProjects)"
       write-output $files
 
 - task: DotNetCoreCLI@2

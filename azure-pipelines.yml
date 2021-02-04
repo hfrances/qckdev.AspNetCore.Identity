@@ -37,7 +37,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $items = Get-Childitem -file **/*.??proj
+      $items = Get-Childitem -file **//$(ProjectName).??proj
       write-output "write-output $items"
       write-host "write-host $items"
       echo "echo $items"
@@ -59,6 +59,15 @@ steps:
       $xml = [Xml] (Get-Content '**/$(ProjectName).??proj')
       $version = [Version] $xml.Project.PropertyGroup.Version
       echo "##vso[task.setvariable variable=MainProject_Version]$version"
+
+- task: PowerShell@2
+  displayName: $(MainProject.Version) v2
+  inputs:
+    targetType: 'inline'
+    script: |
+      $xml = [Xml] (Get-Content '**/$(ProjectName).??proj')
+      $version = [Version] $xml.Project.PropertyGroup.Version
+      echo "##vso[task.setvariable variable=MainProject.Version]$version"
 
 - task: PowerShell@2
   displayName: 'Export variable list'

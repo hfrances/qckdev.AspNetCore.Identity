@@ -67,6 +67,14 @@ steps:
    
       write-output "##vso[task.addattachment type=Distributedtask.Core.Summary;name=Environment Variables;]$fileName"
 
+- task: PowerShell@2
+  displayName: 'Get projects'
+  inputs:
+    targetType: 'inline'
+    script: |
+      $files = Get-ChildItem -recurse $(Parameters.RestoreBuildProjects)
+      write-output $files
+
 - task: DotNetCoreCLI@2
   displayName: Restore
   inputs:

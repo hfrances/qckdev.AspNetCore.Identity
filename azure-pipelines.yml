@@ -71,7 +71,10 @@ steps:
     targetType: 'inline'
     script: |
       $files = [string[]] (Get-ChildItem -file $env:PARAMETERS_RESTOREBUILDPROJECTS)
+      write-output 'Begin projects'
       write-output $files
+      write-output 'End projects'
+      write-output $(MainProject2.Version)
 
 - task: DotNetCoreCLI@2
   displayName: Restore

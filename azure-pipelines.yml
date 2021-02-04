@@ -37,18 +37,8 @@ steps:
     script: |
       $xml = [Xml] (Get-Content '**/$(BuildParameters.ProjectName).??proj')
       $version = $xml.Project.PropertyGroup.Version
-      write-output "Version: $version"
-      echo "##vso[task.setvariable variable=MainProject_Version]$version"
-
-- task: PowerShell@2
-  displayName: $(MainProject.Version) v2
-  inputs:
-    targetType: 'inline'
-    script: |
-      $xml = [Xml] (Get-Content '**/$(BuildParameters.ProjectName).??proj')
-      $version = $xml.Project.PropertyGroup.Version
       write-output "Vesion: $version"
-      echo "##vso[task.setvariable variable=MainProject2.Version]$version"
+      echo "##vso[task.setvariable variable=MainProject.Version]$version"
 
 - task: PowerShell@2
   displayName: 'Export variable list'
@@ -70,11 +60,11 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $files = [string[]] (Get-ChildItem -file $env:PARAMETERS_RESTOREBUILDPROJECTS)
+      $files = [string[]] (Get-ChildItem -file $env:BUILDPARAMETERS_RESTOREBUILDPROJECTS)
       write-output 'Begin projects'
       write-output $files
       write-output 'End projects'
-      write-output $(MainProject2.Version)
+      write-output 'Version: $(MainProject.Version)'
 
 - task: DotNetCoreCLI@2
   displayName: Restore
@@ -89,7 +79,7 @@ steps:
     scannerMode: 'MSBuild'
     projectKey: '$(BuildParameters.ProjectKey)'
     projectName: '$(BuildParameters.ProjectName)'
-    projectVersion: '$(MainProject2.Version)'
+    projectVersion: '$(MainProject.Version)'
 
 - task: DotNetCoreCLI@2
   displayName: Build

@@ -5,12 +5,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using qckdev.AspNetCore.Identity.Commands;
-using qckdev.AspNetCore.Identity.Controllers;
-using qckdev.AspNetCore.Identity.Helpers;
-using qckdev.AspNetCore.Identity.Infrastructure;
-using qckdev.AspNetCore.Identity.Infrastructure.Data;
-using qckdev.AspNetCore.Identity.Services;
+using qckdev.AspNetCore.Identity;
+using qckdev.AspNetCore.Identity.Middleware;
 
 public void ConfigureServices(IServiceCollection services)
 {
@@ -18,7 +14,7 @@ public void ConfigureServices(IServiceCollection services)
 
     services
         .AddApplication()
-        .AddInfrastructure<TUser, DemoDbContext<TUser>>(options =>
+        .AddInfrastructure<TUser, MiauthDbContext<TUser>>(options =>
             options.UseInMemoryDatabase("miauth")
         )
         .AddDataInitializer<DataInitialization>()
@@ -32,6 +28,7 @@ public void ConfigureServices(IServiceCollection services)
             options.ClientId = configuration["Authentication:Google:ClientId"];
             options.ClientSecret = configuration["Authentication:Google:ClientSecret"];
         })
+	.AddGoogleAuthorizationFlow()
         .AddMicrosoftAccount("MSAL", Guid.Parse(configuration["Authentication:Microsoft:TenantId"]),
             options =>
             {
@@ -39,7 +36,7 @@ public void ConfigureServices(IServiceCollection services)
                 options.ClientSecret = configuration["Authentication:Microsoft:ClientSecret"];
             }
         )
-        .AddAuthorizationFlow()
+        .AddMicrosoftAuthorizationFlow()
     ;
 
     services.AddControllers();
@@ -47,14 +44,14 @@ public void ConfigureServices(IServiceCollection services)
 
 public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 {
-    [...]
+    (...)
 
     app.UseMiddleware<HandlerExceptionMiddleware>();
     app.UseRouting();
     app.UseAuthentication();
     app.UseAuthorization();
 
-    [...]
+    (...)
 
     app.DataInitialization();
 }
@@ -65,7 +62,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using qckdev.AspNetCore.Identity.Infrastructure.Data;
 
-public class DemoDbContext<TUser> : ApplicationDbContext<TUser>
+public class MiauthDbContext<TUser> : ApplicationDbContext<TUser>
     where TUser : IdentityUser
 {
 
@@ -102,7 +99,7 @@ public class DataInitialization : IDataInitializer
 
 ```json
 {
-  [...]
+  (...)
   "Tokens": {
     "Key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     "ClientId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",

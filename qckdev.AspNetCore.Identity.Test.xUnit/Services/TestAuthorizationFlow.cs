@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using qckdev.AspNetCore.Identity.AuthorizationFlow;
 using qckdev.AspNetCore.Identity.Services;
 using System;
 using System.Collections.Generic;

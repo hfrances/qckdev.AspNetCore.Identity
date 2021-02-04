@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using qckdev.AspNetCore.Identity.Exceptions;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -15,6 +16,11 @@ namespace qckdev.AspNetCore.Identity.Helpers
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver()
         };
+
+        public async static Task<dynamic> GetAccessToken(Uri baseAddress, string requestUri, object credentials)
+        {
+            return await GetAccessToken<dynamic>(baseAddress, requestUri, credentials);
+        }
 
         public async static Task<T> GetAccessToken<T>(Uri baseAddress, string requestUri, object credentials)
         {
@@ -42,15 +48,33 @@ namespace qckdev.AspNetCore.Identity.Helpers
             return client;
         }
 
-
-        public async static Task<T> Fetch<T>(this HttpClient client, HttpMethod method, string requestUri, object content = null)
+        public async static Task<dynamic> Fetch(this HttpClient client, HttpMethod method, string requestUri, object content = null)
         {
+            return await Fetch<dynamic>(client, method, requestUri, content);
+        }
 
-            return await Fetch<T>(client, method, requestUri,
+        public async static Task<TResult> Fetch<TResult>(this HttpClient client, HttpMethod method, string requestUri, object content = null)
+        {
+            return await Fetch<TResult, dynamic>(client, method, requestUri, content);
+        }
+
+        public async static Task<TResult> Fetch<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, object content = null)
+        {
+            return await Fetch<TResult, TError>(client, method, requestUri,
                 content != null ? JsonConvert.SerializeObject(content, jsettings) : null);
         }
 
-        public async static Task<T> Fetch<T>(this HttpClient client, HttpMethod method, string requestUri, string content)
+        public async static Task<dynamic> Fetch(this HttpClient client, HttpMethod method, string requestUri, string content)
+        {
+            return await Fetch<dynamic>(client, method, requestUri, content);
+        }
+
+        public async static Task<TResult> Fetch<TResult>(this HttpClient client, HttpMethod method, string requestUri, string content)
+        {
+            return await Fetch<TResult, dynamic>(client, method, requestUri, content);
+        }
+
+        public async static Task<TResult> Fetch<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, string content)
         {
             var request = new HttpRequestMessage(method, requestUri)
             {
@@ -64,11 +88,21 @@ namespace qckdev.AspNetCore.Identity.Helpers
 
             using (request)
             {
-                return await Fetch<T>(client, request);
+                return await Fetch<TResult, TError>(client, request);
             }
         }
 
-        public async static Task<T> Fetch<T>(this HttpClient client, HttpMethod method, string requestUri, FormUrlEncodedContent content)
+        public async static Task<dynamic> Fetch(this HttpClient client, HttpMethod method, string requestUri, FormUrlEncodedContent content)
+        {
+            return await Fetch<dynamic>(client, method, requestUri, content);
+        }
+
+        public async static Task<TResult> Fetch<TResult>(this HttpClient client, HttpMethod method, string requestUri, FormUrlEncodedContent content)
+        {
+            return await Fetch<TResult, dynamic>(client, method, requestUri, content);
+        }
+
+        public async static Task<TResult> Fetch<TResult, TError>(this HttpClient client, HttpMethod method, string requestUri, FormUrlEncodedContent content)
         {
             var request = new HttpRequestMessage(method, requestUri)
             {
@@ -77,28 +111,30 @@ namespace qckdev.AspNetCore.Identity.Helpers
 
             using (request)
             {
-                return await Fetch<T>(client, request);
+                return await Fetch<TResult, TError>(client, request);
             }
         }
 
-        private async static Task<T> Fetch<T>(HttpClient client, HttpRequestMessage request)
+        private async static Task<TResult> Fetch<TResult, TError>(HttpClient client, HttpRequestMessage request)
         {
 
             using (var response = await client.SendAsync(request))
             {
+                var jsonString = await response.Content?.ReadAsStringAsync();
+
                 if (response.IsSuccessStatusCode)
                 {
-                    var jsonString = await response.Content?.ReadAsStringAsync();
-
-                    return jsonString != null ?
-                            JsonConvert.DeserializeObject<T>(jsonString, jsettings)
-                            :
-                            default;
+                    return 
+                        (jsonString == null) ? default :
+                            JsonConvert.DeserializeObject<TResult>(jsonString, jsettings);
                 }
                 else
                 {
-                    var message = await response.Content.ReadAsStringAsync();
-                    throw new HttpRequestException($"({response.ReasonPhrase}) {message}");
+                    var error = 
+                        (jsonString == null) ? default :
+                            JsonConvert.DeserializeObject<TError>(jsonString, jsettings);
+
+                    throw new FetchFailedException<TError>(response.StatusCode, response.ReasonPhrase, error);
                 }
             }
         }

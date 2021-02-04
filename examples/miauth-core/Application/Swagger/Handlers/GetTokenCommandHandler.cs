@@ -2,6 +2,7 @@
 using miauthcore.Application.Swagger.Commands;
 using Microsoft.Extensions.Configuration;
 using qckdev.AspNetCore.Identity;
+using qckdev.AspNetCore.Identity.AuthorizationFlow;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

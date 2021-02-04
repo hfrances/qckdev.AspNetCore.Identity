@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using qckdev.AspNetCore.Identity;
 using qckdev.AspNetCore.Identity.Infrastructure.Data;
 using qckdev.AspNetCore.Identity.Services;
 using System;
@@ -9,9 +9,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace qckdev.AspNetCore.Identity.Infrastructure
+namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class DependencyInjection
+    public static class QIdentityInfrastructureDependencyInjection
     {
 
         public static IServiceCollection AddInfrastructure<TUser>(

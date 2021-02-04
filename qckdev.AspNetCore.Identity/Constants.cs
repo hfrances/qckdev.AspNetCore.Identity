@@ -6,5 +6,7 @@ namespace qckdev.AspNetCore.Identity
 
         public const string EXTERNALCONFIRMATION_POLICY = "ExternalConfirmation";
         public const string REQUESTID_CLAIMTYPE = "requestId";
+        public const string DISABLE_CORS_POLICY = "NoCors";
+
     }
 }

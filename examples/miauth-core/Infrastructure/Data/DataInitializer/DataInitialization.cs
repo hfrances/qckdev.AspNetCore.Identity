@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Configuration;
-using qckdev.AspNetCore.Identity.Commands;
 using qckdev.AspNetCore.Identity.Infrastructure.Data;
 using qckdev.AspNetCore.Identity.Services;
 using System;
@@ -34,7 +33,6 @@ namespace miauthcore.Infrastructure.Data.DataInitializer
         public async Task InitializeAsync(CancellationToken cancellationToken)
         {
             await SeedRolesAsync();
-            await SeedRootUserAsync();
         }
 
         private async Task SeedRolesAsync()
@@ -50,17 +48,6 @@ namespace miauthcore.Infrastructure.Data.DataInitializer
                     role.Name = roleName;
                     await IdentityManager.CreateRoleAsync(role);
                 }
-            }
-        }
-
-        private async Task SeedRootUserAsync()
-        {
-            var rootUsers = new List<CreateRootUserCommand>();
-
-            Configuration.GetSection("RootUsers").Bind(rootUsers);
-            foreach (var item in rootUsers)
-            {
-                await Mediator.Send(item);
             }
         }
 

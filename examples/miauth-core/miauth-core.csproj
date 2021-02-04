@@ -23,6 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\qckdev.AspNetCore.Identity.Google\qckdev.AspNetCore.Identity.Google.csproj" />
+    <ProjectReference Include="..\..\qckdev.AspNetCore.Identity.Microsoft\qckdev.AspNetCore.Identity.Microsoft.csproj" />
     <ProjectReference Include="..\..\qckdev.AspNetCore.Identity\qckdev.AspNetCore.Identity.csproj" />
   </ItemGroup>
 

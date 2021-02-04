@@ -1,4 +1,4 @@
-using miauthcore.AuthenticationFlow;
+using MediatR;
 using miauthcore.Entities;
 using miauthcore.Infrastructure.Data;
 using miauthcore.Infrastructure.Data.DataInitializer;
@@ -13,11 +13,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using qckdev.AspNetCore.Identity;
-using qckdev.AspNetCore.Identity.Commands;
-using qckdev.AspNetCore.Identity.Helpers;
-using qckdev.AspNetCore.Identity.Infrastructure;
+using qckdev.AspNetCore.Identity.JwtBearer;
 using qckdev.AspNetCore.Identity.Middleware;
 using System;
+using System.Reflection;
 
 namespace miauthcore
 {
@@ -35,13 +34,19 @@ namespace miauthcore
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDisableCors();
+
+            services.AddMediatR(Assembly.GetExecutingAssembly());
             ConfigureService<MiauthUser>(services, this.Configuration);
+
+            services.AddSwagger();
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseCors("NoCors");
+            app.UseDisableCors();
 
             if (env.IsDevelopment())
             {
@@ -74,20 +79,14 @@ namespace miauthcore
 
         private static void ConfigureService<TUser>(IServiceCollection services, IConfiguration configuration) where TUser : IdentityUser, new()
         {
-            var jwtTokenConfiguration = JwtTokenConfiguration.Get(configuration, "Tokens");
-
-            //Cors Policy
-            services.AddCors(opt => opt.AddPolicy("NoCors", builder =>
-            {
-                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-            }));
+            var jwtTokenConfiguration = configuration.GetSection("Tokens").Get<JwtTokenConfiguration>();
+            var googleConfiguration = configuration.GetSection("Authentication:Google").Get<Model.GoogleAuthenticationConfig>();
+            var microsoftConfiguration = configuration.GetSection("Authentication:Microsoft").Get<Model.MicrosoftAuthenticationConfig>();
 
             services
                 .AddApplication()
                 .AddInfrastructure<TUser, MiauthDbContext<TUser>>(options =>
                     options.UseInMemoryDatabase("miauth")
-                //  options.UseMySql(Configuration.GetConnectionString("DefaultConnection"),
-                //      b => b.MigrationsAssembly(typeof(ApplicationDbContext<TIdentityUser>).Assembly.FullName)
                 )
                 .AddDataInitializer<DataInitialization>()
             ;
@@ -97,17 +96,18 @@ namespace miauthcore
                 .AddJwtBearer(jwtTokenConfiguration)
                 .AddGoogle(options =>
                 {
-                    options.ClientId = configuration["Authentication:Google:ClientId"];
-                    options.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+                    options.ClientId = googleConfiguration.ClientId;
+                    options.ClientSecret = googleConfiguration.ClientSecret;
                 })
-                .AddMicrosoftAccount("MSAL", Guid.Parse(configuration["Authentication:Microsoft:TenantId"]),
+                .AddGoogleAuthorizationFlow()
+                .AddMicrosoftAccount("MSAL", microsoftConfiguration.TenantId ?? Guid.Empty,
                     options =>
                     {
-                        options.ClientId = configuration["Authentication:Microsoft:ClientId"];
-                        options.ClientSecret = configuration["Authentication:Microsoft:ClientSecret"];
+                        options.ClientId = microsoftConfiguration.ClientId;
+                        options.ClientSecret = microsoftConfiguration.ClientSecret;
                     }
                 )
-                .AddAuthorizationFlow()
+                .AddMicrosoftAuthorizationFlow()
             ;
 
             services.Configure<IdentityOptions>(options =>
@@ -123,18 +123,6 @@ namespace miauthcore
                 options.Password.RequiredUniqueChars = 0;
             });
 
-            services
-                .CustomizeAction<CreateUserCommand, CreateUserArgs<TUser>>(
-                    (request, args) =>
-                    {
-                        args.Roles = new string[] { "User", "Guest" };
-                    }
-                )
-                .CustomizeAction<CreateRootUserCustomization<TUser>>()
-            ;
-
-            services.AddSwagger();
-            services.AddControllers();
         }
 
     }

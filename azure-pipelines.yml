@@ -14,6 +14,11 @@ variables:
   projectName: qckdev.AspNetCore.Identity
   buildConfiguration: 'Release'
 
+parameters:
+  - name: restoreBuildProjects
+    type: string
+    default: '**/*.sln'
+
 steps:
 - task: DotNetCoreCLI@2
   displayName: Restore

@@ -35,7 +35,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $xml = [Xml] (Get-Content '**/$(ProjectName).??proj')
+      $xml = [Xml] (Get-Content '**/$(BuildParameters.ProjectName).??proj')
       $version = $xml.Project.PropertyGroup.Version
       write-output "Version: $version"
       echo "##vso[task.setvariable variable=MainProject_Version]$version"
@@ -45,7 +45,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $xml = [Xml] (Get-Content '**/$(ProjectName).??proj')
+      $xml = [Xml] (Get-Content '**/$(BuildParameters.ProjectName).??proj')
       $version = $xml.Project.PropertyGroup.Version
       write-output "Vesion: $version"
       echo "##vso[task.setvariable variable=MainProject2.Version]$version"

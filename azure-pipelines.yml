@@ -71,14 +71,14 @@ steps:
 #  inputs:
 #    command: restore
 #    projects: '$(Parameters.RestoreBuildProjects)'
-#- task: SonarCloudPrepare@1
-#  inputs:
-#    SonarCloud: 'SonarCloud'
-#    organization: 'hfrances-github'
-#    scannerMode: 'MSBuild'
-#    projectKey: '$(ProjectKey)'
-#    projectName: '$(ProjectName)'
-#    projectVersion: '$(MainProject.Version)'
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'SonarCloud'
+    organization: 'hfrances-github'
+    scannerMode: 'MSBuild'
+    projectKey: '$(ProjectKey)'
+    projectName: '$(ProjectName)'
+    projectVersion: '$(MainProject.Version)'
 #- task: DotNetCoreCLI@2
 #  displayName: Build
 #  inputs:

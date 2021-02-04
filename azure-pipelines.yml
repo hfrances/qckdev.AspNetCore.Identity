@@ -29,8 +29,9 @@ steps:
     targetType: 'inline'
     script: |
       echo "##vso[task.setvariable variable=PARAMETERS_PROJECTKEY]qckdev.AspNetCore.Identity"
-      echo "##vso[task.setvariable variable=PARAMETERS_PROJECTName]qckdev.AspNetCore.Identity"
+      echo "##vso[task.setvariable variable=PARAMETERS_PROJECTNAME]qckdev.AspNetCore.Identity"
       echo "##vso[task.setvariable variable=PARAMETERS_RESTOREBUILDPROJECTS]**/*.sln"
+      echo "##vso[task.setvariable variable=PARAMETERS_TESTPROJECTS]**/*Tests/*.csproj"
 
 - task: PowerShell@2
   displayName: $(MainProject.Version)

@@ -9,48 +9,25 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-variables:
-  projectkey: qckdev.AspNetCore.Identity
-  projectName: qckdev.AspNetCore.Identity
-  buildConfiguration: 'Release'
-
 parameters:
   - name: restoreBuildProjects
     displayName: Solution(s) to restore and build
     type: string
     default: '**/*.sln'
 
+variables:
+  projectkey: qckdev.AspNetCore.Identity
+  projectName: qckdev.AspNetCore.Identity
+  buildConfiguration: 'Release'
+
 steps:
-#- task: DotNetCoreCLI@2
-#  displayName: Restore
-#  inputs:
-#    command: restore
-#    projects: '$(Parameters.RestoreBuildProjects)'
+
 #- task: ProjectVarReader@0
 #  inputs:
 #    searchPattern: '**/$(ProjectName).??proj'
 #    displayName: $(MainProject.Version)
 #    variablePrefix: 'MainProject'
 #    propertyName: 'Version'
-- task: PowerShell@2
-  displayName: Get projects
-  inputs:
-    targetType: 'inline'
-    script: |
-      $items = Get-Childitem -file '**/$(ProjectName).??proj'
-      write-output "write-output $items"
-      write-host "write-host $items"
-      echo "echo $items"
-
-- task: PowerShell@2
-  displayName: $(ProjectVersion)
-  inputs:
-    targetType: 'inline'
-    script: |
-      $xml = [Xml] (Get-Content '**/$(ProjectName).??proj')
-      $version = $xml.Project.PropertyGroup.Version
-      write-output $version
-      echo "##vso[task.setvariable variable=Version]$version"
 
 - task: PowerShell@2
   displayName: $(MainProject.Version)
@@ -58,7 +35,7 @@ steps:
     targetType: 'inline'
     script: |
       $xml = [Xml] (Get-Content '**/$(ProjectName).??proj')
-      $version = $xml.Project.PropertyGroup.Version
+      $version = [Version] $xml.Project.PropertyGroup.Version
       write-output $version
       echo "##vso[task.setvariable variable=MainProject_Version]$version"
 
@@ -70,17 +47,9 @@ steps:
       $xml = [Xml] (Get-Content '**/$(ProjectName).??proj')
       write-output $xml
       write-output $xml.Project
-      $version = $xml.Project.PropertyGroup.Version
+      $version = [Version] $xml.Project.PropertyGroup.Version
       write-output $version
       echo "##vso[task.setvariable variable=MainProject2.Version]$version"
-
-- task: PowerShell@2
-  displayName: prueba
-  inputs:
-    targetType: 'inline'
-    script: |
-      $xml = Get-Content '**/$(ProjectName).??proj'
-      write-output $xml
 
 - task: PowerShell@2
   displayName: 'Export variable list'
@@ -97,6 +66,11 @@ steps:
    
       write-output "##vso[task.addattachment type=Distributedtask.Core.Summary;name=Environment Variables;]$fileName"
 
+#- task: DotNetCoreCLI@2
+#  displayName: Restore
+#  inputs:
+#    command: restore
+#    projects: '$(Parameters.RestoreBuildProjects)'
 #- task: SonarCloudPrepare@1
 #  inputs:
 #    SonarCloud: 'SonarCloud'

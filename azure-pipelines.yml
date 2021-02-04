@@ -85,21 +85,21 @@ steps:
     SonarCloud: 'SonarCloud'
     organization: 'hfrances-github'
     scannerMode: 'MSBuild'
-    projectKey: '$(ProjectKey)'
-    projectName: '$(ProjectName)'
+    projectKey: '$(BuildParameters.ProjectKey)'
+    projectName: '$(BuildParameters.ProjectName)'
     projectVersion: '$(MainProject.Version)'
 
 - task: DotNetCoreCLI@2
   displayName: Build
   inputs:
-    projects: '$(Parameters.RestoreBuildProjects)'
+    projects: '$(BuildParameters.RestoreBuildProjects)'
     arguments: '--configuration $(BuildConfiguration)'
 
 - task: DotNetCoreCLI@2
   displayName: Test
   inputs:
     command: test
-    projects: '$(Parameters.TestProjects)'
+    projects: '$(BuildParameters.TestProjects)'
     arguments: '--configuration $(BuildConfiguration)'
 
 - task: SonarCloudAnalyze@1

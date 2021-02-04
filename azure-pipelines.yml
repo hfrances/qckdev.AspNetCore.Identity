@@ -1,0 +1,101 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - name: BuildParameters.RestoreBuildProjects
+    value: '**/*.sln'
+  - name: BuildParameters.TestProjects
+    value: '**/*Tests/*.csproj'
+  - name: BuildParameters.ProjectKey
+    value: qckdev.AspNetCore.Identity
+  - name: BuildParameters.ProjectName
+    value: qckdev.AspNetCore.Identity
+  - name: BuildConfiguration
+    value: 'Release'
+
+steps:
+
+#- task: ProjectVarReader@0
+#  inputs:
+#    searchPattern: '**/$(ProjectName).??proj'
+#    displayName: $(MainProject.Version)
+#    variablePrefix: 'MainProject'
+#    propertyName: 'Version'
+
+- task: PowerShell@2
+  displayName: $(MainProject.Version)
+  inputs:
+    targetType: 'inline'
+    script: |
+      $xml = [Xml] (Get-Content '**/$(BuildParameters.ProjectName).??proj')
+      $version = $xml.Project.PropertyGroup.Version
+      write-output "Vesion: $version"
+      echo "##vso[task.setvariable variable=MainProject.Version]$version"
+
+- task: PowerShell@2
+  displayName: 'Export variable list'
+  inputs:
+    targetType: 'inline'
+    script: |
+      $var = (gci env:*).GetEnumerator() | Sort-Object Name
+      $out = ""
+      Foreach ($v in $var) {$out = $out + "`t{0,-28} = {1,-28}`n" -f $v.Name, $v.Value}
+      
+      $fileName = Join-Path $env:BUILD_ARTIFACTSTAGINGDIRECTORY "variable-list.md"
+      write-output "dump variables on $fileName"
+      set-content $fileName $out
+   
+      write-output "##vso[task.addattachment type=Distributedtask.Core.Summary;name=Environment Variables;]$fileName"
+
+- task: PowerShell@2
+  displayName: 'ECHO projects'
+  inputs:
+    targetType: 'inline'
+    script: |
+      $files = [string[]] (Get-ChildItem -file $env:BUILDPARAMETERS_RESTOREBUILDPROJECTS)
+      write-output 'Begin projects'
+      write-output $files
+      write-output 'End projects'
+      write-output 'Version: $(MainProject.Version)'
+
+- task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: restore
+    projects: '**/*.??proj'
+
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'SonarCloud'
+    organization: 'hfrances-github'
+    scannerMode: 'MSBuild'
+    projectKey: '$(BuildParameters.ProjectKey)'
+    projectName: '$(BuildParameters.ProjectName)'
+    projectVersion: '$(MainProject.Version)'
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    projects: '$(BuildParameters.RestoreBuildProjects)'
+    arguments: '--configuration $(BuildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: Test
+  inputs:
+    command: test
+    projects: '$(BuildParameters.TestProjects)'
+    arguments: '--configuration $(BuildConfiguration)'
+
+- task: SonarCloudAnalyze@1
+
+- task: SonarCloudPublish@1
+  inputs:
+    pollingTimeoutSec: '300'

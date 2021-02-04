@@ -66,7 +66,7 @@ public class MiauthDbContext<TUser> : ApplicationDbContext<TUser>
     where TUser : IdentityUser
 {
 
-    public MiauthDbContext(DbContextOptions options) : base(options) { }
+    public DemoDbContext(DbContextOptions options) : base(options) { }
 
 }
 ```

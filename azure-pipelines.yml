@@ -48,11 +48,8 @@ steps:
     targetType: 'inline'
     script: |
       $xml = [Xml] (Get-Content '**/$(ProjectName).??proj')
-      echo "xml: $xml"
-      echo "xml.Project $xml.Project"
-      echo "xml.Project.PropertyGroup $xml.Project.PropertyGroup"
-      echo "xml.Project.PropertyGroup.Version $xml.Project.PropertyGroup.Version"
       $version = $xml.Project.PropertyGroup.Version
+      write-output $version
       echo "##vso[task.setvariable variable=Version]$version"
 
 - task: PowerShell@2
@@ -61,11 +58,8 @@ steps:
     targetType: 'inline'
     script: |
       $xml = [Xml] (Get-Content '**/$(ProjectName).??proj')
-      echo "xml: $xml"
-      echo "xml.Project $xml.Project"
-      echo "xml.Project.PropertyGroup $xml.Project.PropertyGroup"
-      echo "xml.Project.PropertyGroup.Version $xml.Project.PropertyGroup.Version"
       $version = $xml.Project.PropertyGroup.Version
+      write-output $version
       echo "##vso[task.setvariable variable=MainProject_Version]$version"
 
 - task: PowerShell@2
@@ -74,11 +68,8 @@ steps:
     targetType: 'inline'
     script: |
       $xml = [Xml] (Get-Content '**/$(ProjectName).??proj')
-      echo "xml: $xml"
-      echo "xml.Project $xml.Project"
-      echo "xml.Project.PropertyGroup $xml.Project.PropertyGroup"
-      echo "xml.Project.PropertyGroup.Version $xml.Project.PropertyGroup.Version"
       $version = $xml.Project.PropertyGroup.Version
+      write-output $version
       echo "##vso[task.setvariable variable=MainProject2.Version]$version"
 
 - task: PowerShell@2

@@ -20,11 +20,11 @@ parameters:
     default: '**/*.sln'
 
 steps:
-- task: DotNetCoreCLI@2
-  displayName: Restore
-  inputs:
-    command: restore
-    projects: '$(Parameters.RestoreBuildProjects)'
+#- task: DotNetCoreCLI@2
+#  displayName: Restore
+#  inputs:
+#    command: restore
+#    projects: '$(Parameters.RestoreBuildProjects)'
 - task: ProjectVarReader@0
   inputs:
     searchPattern: '**\$(ProjectName).??proj'

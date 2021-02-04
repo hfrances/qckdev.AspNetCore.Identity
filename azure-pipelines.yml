@@ -68,9 +68,18 @@ steps:
     targetType: 'inline'
     script: |
       $xml = [Xml] (Get-Content '**/$(ProjectName).??proj')
+      write-output $xml
       $version = $xml.Project.PropertyGroup.Version
       write-output $version
       echo "##vso[task.setvariable variable=MainProject2.Version]$version"
+
+- task: PowerShell@2
+  displayName: prueba
+  inputs:
+    targetType: 'inline'
+    script: |
+      $xml = Get-Content '**/$(ProjectName).??proj'
+      write-output $xml
 
 - task: PowerShell@2
   displayName: 'Export variable list'
@@ -87,26 +96,26 @@ steps:
    
       write-output "##vso[task.addattachment type=Distributedtask.Core.Summary;name=Environment Variables;]$fileName"
 
-- task: SonarCloudPrepare@1
-  inputs:
-    SonarCloud: 'SonarCloud'
-    organization: 'hfrances-github'
-    scannerMode: 'MSBuild'
-    projectKey: '$(ProjectKey)'
-    projectName: '$(ProjectName)'
-    projectVersion: '$(MainProject.Version)'
-- task: DotNetCoreCLI@2
-  displayName: Build
-  inputs:
-    projects: '$(Parameters.RestoreBuildProjects)'
-    arguments: '--configuration $(BuildConfiguration)'
-- task: DotNetCoreCLI@2
-  displayName: Test
-  inputs:
-    command: test
-    projects: '$(Parameters.TestProjects)'
-    arguments: '--configuration $(BuildConfiguration)'
-- task: SonarCloudAnalyze@1
-- task: SonarCloudPublish@1
-  inputs:
-    pollingTimeoutSec: '300'
+#- task: SonarCloudPrepare@1
+#  inputs:
+#    SonarCloud: 'SonarCloud'
+#    organization: 'hfrances-github'
+#    scannerMode: 'MSBuild'
+#    projectKey: '$(ProjectKey)'
+#    projectName: '$(ProjectName)'
+#    projectVersion: '$(MainProject.Version)'
+#- task: DotNetCoreCLI@2
+#  displayName: Build
+#  inputs:
+#    projects: '$(Parameters.RestoreBuildProjects)'
+#    arguments: '--configuration $(BuildConfiguration)'
+#- task: DotNetCoreCLI@2
+#  displayName: Test
+#  inputs:
+#    command: test
+#    projects: '$(Parameters.TestProjects)'
+#    arguments: '--configuration $(BuildConfiguration)'
+#- task: SonarCloudAnalyze@1
+#- task: SonarCloudPublish@1
+#  inputs:
+#    pollingTimeoutSec: '300'

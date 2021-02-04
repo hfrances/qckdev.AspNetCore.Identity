@@ -25,11 +25,35 @@ steps:
 #  inputs:
 #    command: restore
 #    projects: '$(Parameters.RestoreBuildProjects)'
-- task: ProjectVarReader@0
+#- task: ProjectVarReader@0
+#  inputs:
+#    searchPattern: '**\$(ProjectName).??proj'
+#    displayName: $(MainProject.Version)
+#    variablePrefix: 'MainProject'
+#    propertyName: 'Version'
+- task: PowerShell@2
+  displayName: $(ProjectVersion)
   inputs:
-    searchPattern: '**\$(ProjectName).??proj'
-    variablePrefix: 'MainProject'
-    propertyName: 'Version'
+    targetType: 'inline'
+    script: |
+      $xml = [Xml] (Get-Content '**\$(ProjectName).??proj')
+      $version = [Version] $xml.Project.PropertyGroup.Version
+      echo "##vso[task.setvariable variable=Version]$version"
+- task: PowerShell@2
+  displayName: 'Export variable list'
+  inputs:
+    targetType: 'inline'
+    script: |
+      $var = (gci env:*).GetEnumerator() | Sort-Object Name
+      $out = ""
+      Foreach ($v in $var) {$out = $out + "`t{0,-28} = {1,-28}`n" -f $v.Name, $v.Value}
+        
+      write-output "dump variables on $env:BUILD_ARTIFACTSTAGINGDIRECTORY\variable-list.md"
+      $fileName = "$env:BUILD_ARTIFACTSTAGINGDIRECTORY\variable-list.md"
+      set-content $fileName $out
+   
+      write-output "##vso[task.addattachment type=Distributedtask.Core.Summary;name=Environment Variables;]$fileName"
+
 - task: SonarCloudPrepare@1
   inputs:
     SonarCloud: 'SonarCloud'

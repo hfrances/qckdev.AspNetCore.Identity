@@ -69,6 +69,7 @@ steps:
     script: |
       $xml = [Xml] (Get-Content '**/$(ProjectName).??proj')
       write-output $xml
+      write-output $xml.Project
       $version = $xml.Project.PropertyGroup.Version
       write-output $version
       echo "##vso[task.setvariable variable=MainProject2.Version]$version"

@@ -67,11 +67,11 @@ steps:
 
 
 - task: PowerShell@2
-  displayName: 'Get projects'
+  displayName: 'ECHO projects'
   inputs:
     targetType: 'inline'
     script: |
-      $files = Get-ChildItem -recurse $env:PARAMETERS_RESTOREBUILDPROJECTS
+      $files = [string[]] (Get-ChildItem -file $env:PARAMETERS_RESTOREBUILDPROJECTS)
       write-output $files
 
 - task: DotNetCoreCLI@2

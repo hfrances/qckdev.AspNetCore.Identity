@@ -9,15 +9,6 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-parameters:
-  - name: restoreBuildProjects
-    displayName: Solution(s) to restore and build
-    type: string
-    default: '*.sln'
-    values:
-      - '*.sln'
-      - '**/*.sln'
-
 variables:
   projectkey: qckdev.AspNetCore.Identity
   projectName: qckdev.AspNetCore.Identity
@@ -31,6 +22,15 @@ steps:
 #    displayName: $(MainProject.Version)
 #    variablePrefix: 'MainProject'
 #    propertyName: 'Version'
+
+- task: PowerShell@2
+  displayName: Parameters
+  inputs:
+    targetType: 'inline'
+    script: |
+      echo "##vso[task.setvariable variable=PARAMETERS_PROJECTKEY]qckdev.AspNetCore.Identity"
+      echo "##vso[task.setvariable variable=PARAMETERS_PROJECTName]qckdev.AspNetCore.Identity"
+      echo "##vso[task.setvariable variable=PARAMETERS_RESTOREBUILDPROJECTS]**/*.sln"
 
 - task: PowerShell@2
   displayName: $(MainProject.Version)

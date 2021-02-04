@@ -10,9 +10,16 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  projectkey: qckdev.AspNetCore.Identity
-  projectName: qckdev.AspNetCore.Identity
-  buildConfiguration: 'Release'
+  - name: BuildParameters.RestoreBuildProjects
+    value: '**/*.sln'
+  - name: BuildParameters.TestProjects
+    value: '**/*Tests/*.csproj'
+  - name: BuildParameters.projectKey
+    value: qckdev.AspNetCore.Identity
+  - name: BuildParameters.projectName
+    value: qckdev.AspNetCore.Identity
+  - name: BuildConfiguration
+    value: 'Release'
 
 steps:
 
@@ -22,16 +29,6 @@ steps:
 #    displayName: $(MainProject.Version)
 #    variablePrefix: 'MainProject'
 #    propertyName: 'Version'
-
-- task: PowerShell@2
-  displayName: Parameters
-  inputs:
-    targetType: 'inline'
-    script: |
-      echo "##vso[task.setvariable variable=PARAMETERS_PROJECTKEY]qckdev.AspNetCore.Identity"
-      echo "##vso[task.setvariable variable=PARAMETERS_PROJECTNAME]qckdev.AspNetCore.Identity"
-      echo "##vso[task.setvariable variable=PARAMETERS_RESTOREBUILDPROJECTS]**/*.sln"
-      echo "##vso[task.setvariable variable=PARAMETERS_TESTPROJECTS]**/*Tests/*.csproj"
 
 - task: PowerShell@2
   displayName: $(MainProject.Version)
@@ -68,12 +65,13 @@ steps:
    
       write-output "##vso[task.addattachment type=Distributedtask.Core.Summary;name=Environment Variables;]$fileName"
 
+
 - task: PowerShell@2
   displayName: 'Get projects'
   inputs:
     targetType: 'inline'
     script: |
-      $files = Get-ChildItem -recurse "*.sln"
+      $files = Get-ChildItem -recurse $env:PARAMETERS_RESTOREBUILDPROJECTS
       write-output $files
 
 - task: DotNetCoreCLI@2

@@ -1,5 +1,3 @@
-using MediatR;
-using Moq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -10,7 +8,7 @@ namespace qckdev.AspNetCore.Identity.Test.xUnit
         [Fact]
         public async Task Test1()
         {
-
+            await Task.Run(() => { });
         }
     }
 }

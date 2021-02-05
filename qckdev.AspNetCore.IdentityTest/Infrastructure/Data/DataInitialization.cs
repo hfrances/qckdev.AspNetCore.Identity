@@ -5,7 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace qckdev.AspNetCore.Identity.Test.xUnit.Infrastructure.Data
+namespace qckdev.AspNetCore.IdentityTest.Infrastructure.Data
 {
     sealed class DataInitialization : IDataInitializer
     {

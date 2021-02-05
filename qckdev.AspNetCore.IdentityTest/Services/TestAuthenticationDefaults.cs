@@ -1,5 +1,5 @@
 ﻿
-namespace qckdev.AspNetCore.Identity.Test.xUnit.Services
+namespace qckdev.AspNetCore.IdentityTest.Services
 {
     static class TestAuthenticationDefaults
     {

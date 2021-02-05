@@ -5,15 +5,15 @@ VisualStudioVersion = 16.0.30503.244
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.AspNetCore.Identity", "qckdev.AspNetCore.Identity\qckdev.AspNetCore.Identity.csproj", "{9D571BED-C263-48C7-8863-1A31D071B5C5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.AspNetCore.Identity.Test.xUnit", "qckdev.AspNetCore.Identity.Test.xUnit\qckdev.AspNetCore.Identity.Test.xUnit.csproj", "{801E92D9-70FC-4F8E-B490-AB56340F92DD}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{FA694A22-2A8A-4ADF-BCE6-E08914DBC420}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "miauth-core", "examples\miauth-core\miauth-core.csproj", "{961EAD3A-16B9-43DE-9702-F130C4E31446}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qckdev.AspNetCore.Identity.Microsoft", "qckdev.AspNetCore.Identity.Microsoft\qckdev.AspNetCore.Identity.Microsoft.csproj", "{CECD6335-0291-49C8-AFF5-E481F1F15299}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.AspNetCore.Identity.Microsoft", "qckdev.AspNetCore.Identity.Microsoft\qckdev.AspNetCore.Identity.Microsoft.csproj", "{CECD6335-0291-49C8-AFF5-E481F1F15299}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qckdev.AspNetCore.Identity.Google", "qckdev.AspNetCore.Identity.Google\qckdev.AspNetCore.Identity.Google.csproj", "{1B48FBF8-00D0-43D6-8A76-1747362B6C99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.AspNetCore.Identity.Google", "qckdev.AspNetCore.Identity.Google\qckdev.AspNetCore.Identity.Google.csproj", "{1B48FBF8-00D0-43D6-8A76-1747362B6C99}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.AspNetCore.IdentityTest", "qckdev.AspNetCore.IdentityTest\qckdev.AspNetCore.IdentityTest.csproj", "{6783B1E0-1A22-404C-B878-5F432F4EB7E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +25,6 @@ Global
 		{9D571BED-C263-48C7-8863-1A31D071B5C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D571BED-C263-48C7-8863-1A31D071B5C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D571BED-C263-48C7-8863-1A31D071B5C5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{801E92D9-70FC-4F8E-B490-AB56340F92DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{801E92D9-70FC-4F8E-B490-AB56340F92DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{801E92D9-70FC-4F8E-B490-AB56340F92DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{801E92D9-70FC-4F8E-B490-AB56340F92DD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{961EAD3A-16B9-43DE-9702-F130C4E31446}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{961EAD3A-16B9-43DE-9702-F130C4E31446}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{961EAD3A-16B9-43DE-9702-F130C4E31446}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -41,6 +37,10 @@ Global
 		{1B48FBF8-00D0-43D6-8A76-1747362B6C99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B48FBF8-00D0-43D6-8A76-1747362B6C99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B48FBF8-00D0-43D6-8A76-1747362B6C99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6783B1E0-1A22-404C-B878-5F432F4EB7E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6783B1E0-1A22-404C-B878-5F432F4EB7E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6783B1E0-1A22-404C-B878-5F432F4EB7E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6783B1E0-1A22-404C-B878-5F432F4EB7E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

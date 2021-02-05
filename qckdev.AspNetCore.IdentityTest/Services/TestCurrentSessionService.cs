@@ -9,7 +9,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace qckdev.AspNetCore.Identity.Test.xUnit.Services
+namespace qckdev.AspNetCore.IdentityTest.Services
 {
     sealed class TestCurrentSessionService : ICurrentSessionService
     {

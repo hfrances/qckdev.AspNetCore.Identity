@@ -1,4 +1,4 @@
-﻿using qckdev.AspNetCore.Identity.Test.xUnit.Services;
+﻿using qckdev.AspNetCore.IdentityTest.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,8 +9,9 @@ using System;
 using System.Threading.Tasks;
 using qckdev.AspNetCore.Identity.JwtBearer;
 using MediatR;
+using qckdev.AspNetCore.Identity;
 
-namespace qckdev.AspNetCore.Identity.Test.xUnit.Infrastructure
+namespace qckdev.AspNetCore.IdentityTest.Infrastructure
 {
     class ServiceProviderFixture<TIdentityUser> : IDisposable
         where TIdentityUser : IdentityUser, new()
@@ -59,7 +60,7 @@ namespace qckdev.AspNetCore.Identity.Test.xUnit.Infrastructure
 
         protected virtual async Task OnCreatedAsync()
         {
-            
+            await Task.Run(() => { });
         }
 
         protected void MakeActiveOptions<TOptions>(IServiceProvider services, string name) where TOptions : class

@@ -13,7 +13,7 @@ variables:
   - name: BuildParameters.RestoreBuildProjects
     value: '**/*.Build.sln'
   - name: BuildParameters.TestProjects
-    value: '**/*Tests/*.csproj'
+    value: '**/*.Test.*.??proj'
   - name: BuildParameters.ProjectKey
     value: qckdev.AspNetCore.Identity
   - name: BuildParameters.ProjectName
@@ -22,13 +22,6 @@ variables:
     value: 'Release'
 
 steps:
-
-#- task: ProjectVarReader@0
-#  inputs:
-#    searchPattern: '**/$(ProjectName).??proj'
-#    displayName: $(MainProject.Version)
-#    variablePrefix: 'MainProject'
-#    propertyName: 'Version'
 
 - task: PowerShell@2
   displayName: Get $(MainProject.Version)
@@ -54,17 +47,6 @@ steps:
       set-content $fileName $out
    
       write-output "##vso[task.addattachment type=Distributedtask.Core.Summary;name=Environment Variables;]$fileName"
-
-- task: PowerShell@2
-  displayName: 'ECHO projects'
-  inputs:
-    targetType: 'inline'
-    script: |
-      $files = [string[]] (Get-ChildItem -file $env:BUILDPARAMETERS_RESTOREBUILDPROJECTS)
-      write-output 'Begin projects'
-      write-output $files
-      write-output 'End projects'
-      write-output 'Version: $(MainProject.Version)'
 
 - task: DotNetCoreCLI@2
   displayName: Restore

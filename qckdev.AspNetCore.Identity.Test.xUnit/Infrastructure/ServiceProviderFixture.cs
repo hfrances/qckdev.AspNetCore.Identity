@@ -8,6 +8,7 @@ using qckdev.AspNetCore.Identity.Services;
 using System;
 using System.Threading.Tasks;
 using qckdev.AspNetCore.Identity.JwtBearer;
+using MediatR;
 
 namespace qckdev.AspNetCore.Identity.Test.xUnit.Infrastructure
 {
@@ -30,6 +31,7 @@ namespace qckdev.AspNetCore.Identity.Test.xUnit.Infrastructure
 
             services
                 .AddApplication()
+                .AddMediatR(System.Reflection.Assembly.GetExecutingAssembly())
                 .AddInfrastructure<TIdentityUser>(options =>
                     options.UseInMemoryDatabase(this.DatabaseName)
                 )

@@ -11,9 +11,9 @@ pool:
 
 variables:
   - name: BuildParameters.RestoreBuildProjects
-    value: '**/*.sln'
+    value: '**/*.Build.sln'
   - name: BuildParameters.TestProjects
-    value: '**/*Tests/*.csproj'
+    value: '**/*.Test.*.??proj'
   - name: BuildParameters.ProjectKey
     value: qckdev.AspNetCore.Identity
   - name: BuildParameters.ProjectName
@@ -23,22 +23,15 @@ variables:
 
 steps:
 
-#- task: ProjectVarReader@0
-#  inputs:
-#    searchPattern: '**/$(ProjectName).??proj'
-#    displayName: $(MainProject.Version)
-#    variablePrefix: 'MainProject'
-#    propertyName: 'Version'
-
 - task: PowerShell@2
-  displayName: $(MainProject.Version)
+  displayName: Get $(MainProject.Version)
   inputs:
     targetType: 'inline'
     script: |
       $xml = [Xml] (Get-Content '**/$(BuildParameters.ProjectName).??proj')
       $version = $xml.Project.PropertyGroup.Version
-      write-output "Vesion: $version"
-      echo "##vso[task.setvariable variable=MainProject.Version]$version"
+      write-output "Version: $version"
+      write-output "##vso[task.setvariable variable=MainProject.Version]$version"
 
 - task: PowerShell@2
   displayName: 'Export variable list'
@@ -54,17 +47,6 @@ steps:
       set-content $fileName $out
    
       write-output "##vso[task.addattachment type=Distributedtask.Core.Summary;name=Environment Variables;]$fileName"
-
-- task: PowerShell@2
-  displayName: 'ECHO projects'
-  inputs:
-    targetType: 'inline'
-    script: |
-      $files = [string[]] (Get-ChildItem -file $env:BUILDPARAMETERS_RESTOREBUILDPROJECTS)
-      write-output 'Begin projects'
-      write-output $files
-      write-output 'End projects'
-      write-output 'Version: $(MainProject.Version)'
 
 - task: DotNetCoreCLI@2
   displayName: Restore

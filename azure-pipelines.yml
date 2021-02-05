@@ -9,6 +9,15 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+parameters:
+  - name: BuildParameters.codeCoverageTool
+    displayName: Code coverage tool
+    type: string
+    default: JaCoCo
+    values:
+      - JaCoCo
+      - Cobertura
+
 variables:
   - name: BuildParameters.RestoreBuildProjects
     value: '**/*.Build.sln'
@@ -87,3 +96,20 @@ steps:
 - task: SonarCloudPublish@1
   inputs:
     pollingTimeoutSec: '300'
+
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage'
+  inputs:
+    codeCoverageTool: $(BuildParameters.codeCoverageTool)
+    summaryFileLocation: '$(Build.SourcesDirectory)\TestResults\*.coverage'
+  continueOnError: true
+
+- task: CopyFiles@2
+  displayName: 'Copy NuGet files to Artifact folder'
+  inputs:
+    Contents: '**/*.nupkg'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    flattenFolders: true
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'

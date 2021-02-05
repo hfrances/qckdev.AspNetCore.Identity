@@ -31,13 +31,15 @@ steps:
 #    propertyName: 'Version'
 
 - task: PowerShell@2
-  displayName: $(MainProject.Version)
+  displayName: Get $(MainProject.Version)
   inputs:
     targetType: 'inline'
     script: |
       $xml = [Xml] (Get-Content '**/$(BuildParameters.ProjectName).??proj')
       $version = $xml.Project.PropertyGroup.Version
       echo "##vso[task.setvariable variable=MainProject.Version]$version"
+
+      write-output 'Version: $version'
       write-output 'Version: $(MainProject.Version)'
 
 - task: PowerShell@2
@@ -64,6 +66,7 @@ steps:
       write-output 'Begin projects'
       write-output $files
       write-output 'End projects'
+      write-output 'Version: $(MainProject.Version)'
 
 - task: DotNetCoreCLI@2
   displayName: Restore

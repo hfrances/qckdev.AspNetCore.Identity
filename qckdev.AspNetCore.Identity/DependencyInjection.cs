@@ -27,52 +27,6 @@ namespace Microsoft.Extensions.DependencyInjection
             ;
         }
 
-        /// <summary>
-        /// Adds the specified service as a <see cref="ServiceLifetime.Singleton"/> 
-        /// service with the implementationType implementation to the collection if the service
-        /// type hasn't already been registered.
-        /// </summary>
-        /// <typeparam name="TService">The type of the service to register.</typeparam>
-        /// <typeparam name="TImplementation">The implementation type of the service.</typeparam>
-        /// <param name="collection">The <see cref="IServiceCollection"/>.</param>
-        /// <returns></returns>
-        public static IServiceCollection TryAddSingleton<TService, TImplementation>(this IServiceCollection collection)
-            where TService : class
-            where TImplementation : class, TService
-        {
-            collection.TryAddSingleton(typeof(TService), typeof(TImplementation));
-            return collection;
-        }
-
-        /// <summary>
-        /// Adds the specified service as a <see cref="ServiceLifetime.Scoped"/> service to the collection if the service type hasn't already been registered.
-        /// </summary>
-        /// <typeparam name="TService">The type of the service to register.</typeparam>
-        /// <typeparam name="TImplementation">The implementation type of the service.</typeparam>
-        /// <param name="collection">The <see cref="IServiceCollection"/>.</param>
-        /// <returns></returns>
-        public static IServiceCollection TryAddScoped<TService, TImplementation>(this IServiceCollection services)
-            where TService : class
-            where TImplementation : class, TService
-        {
-            services.TryAddScoped(typeof(TService), typeof(TImplementation));
-            return services;
-        }
-
-        /// <summary>
-        /// Adds the specified service as a <see cref="ServiceLifetime.Scoped"/> service to the collection if the service type hasn't already been registered.
-        /// </summary>
-        /// <typeparam name="TService">The type of the service to register.</typeparam>
-        /// <param name="collection">The <see cref="IServiceCollection"/>.</param>
-        /// <returns></returns>
-        public static IServiceCollection TryAddScoped<TService>(this IServiceCollection services)
-            where TService : class
-        {
-            services.TryAddScoped(typeof(TService));
-            return services;
-        }
-
-        
         public static IServiceCollection AddGuestAuthorization(this IServiceCollection services, string policyName)
         {
             services

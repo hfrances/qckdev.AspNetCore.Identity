@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Configuration;
-using qckdev.AspNetCore.Identity.Infrastructure.Data;
+using qckdev.AspNetCore.Persistence;
 using qckdev.AspNetCore.Identity.Services;
 using System;
 using System.Collections.Generic;

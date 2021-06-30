@@ -12,9 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using qckdev.AspNetCore.Identity;
 using qckdev.AspNetCore.Identity.JwtBearer;
-using qckdev.AspNetCore.Identity.Middleware;
 using System;
 using System.Reflection;
 
@@ -53,7 +51,7 @@ namespace miauthcore
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMiddleware<HandlerExceptionMiddleware>();
+            app.UseJsonExceptionHandler();
 
             app.UseRouting();
 
@@ -72,7 +70,7 @@ namespace miauthcore
                 });
             });
 
-            app.DataInitialization();
+            app.UseDataInitializer();
 
         }
 

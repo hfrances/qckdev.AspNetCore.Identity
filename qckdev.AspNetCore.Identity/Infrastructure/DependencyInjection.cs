@@ -5,9 +5,6 @@ using qckdev.AspNetCore.Identity;
 using qckdev.AspNetCore.Identity.Infrastructure.Data;
 using qckdev.AspNetCore.Identity.Services;
 using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -71,33 +68,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddScoped<IIdentityManager, IdentityManager<TUser, TRole>>();
 
             return services;
-        }
-
-
-        public static IServiceCollection AddDataInitializer<TDataInitializer>(this IServiceCollection services)
-            where TDataInitializer : class, IDataInitializer
-        {
-            return services.AddScoped<IDataInitializer, TDataInitializer>();
-        }
-
-        public static void DataInitialization(this IApplicationBuilder app)
-        {
-
-            using (var scope = app.ApplicationServices.CreateScope())
-            {
-                var tasks = new List<Task>();
-                var dataInitializers = scope
-                    .ServiceProvider
-                           .GetServices<IDataInitializer>();
-
-                foreach (var initializer in dataInitializers)
-                {
-                    tasks.Add(
-                        initializer.InitializeAsync(CancellationToken.None)
-                    );
-                }
-                Task.WhenAll(tasks);
-            }
         }
 
     }

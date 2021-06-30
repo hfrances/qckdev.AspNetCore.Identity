@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using qckdev.AspNetCore.Identity.Infrastructure.Data;
+using qckdev.AspNetCore.Persistence;
 using qckdev.AspNetCore.Identity.Services;
 using System;
 using System.Threading.Tasks;

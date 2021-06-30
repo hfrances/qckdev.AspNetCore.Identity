@@ -1,5 +1,4 @@
 ﻿using qckdev.AspNetCore.Identity.Exceptions;
-using qckdev.AspNetCore.Identity.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using System;

@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using qckdev.AspNetCore.Identity;
-using qckdev.AspNetCore.Identity.Middleware;
 
 public void ConfigureServices(IServiceCollection services)
 {
@@ -14,7 +13,7 @@ public void ConfigureServices(IServiceCollection services)
 
 	services
 		.AddApplication()
-		.AddInfrastructure<TUser, MiauthDbContext<TUser>>(options =>
+		.AddInfrastructure<TUser, DemoDbContext<TUser>>(options =>
 			options.UseInMemoryDatabase("miauth")
 		)
 		.AddDataInitializer<DataInitialization>()
@@ -46,14 +45,14 @@ public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 {
 	(...)
 
-	app.UseMiddleware<HandlerExceptionMiddleware>();
+	app.UseJsonExceptionHandler();
 	app.UseRouting();
 	app.UseAuthentication();
 	app.UseAuthorization();
 
 	(...)
 
-	app.DataInitialization();
+	app.UseDataInitializer();
 }
 ```
 
@@ -62,7 +61,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using qckdev.AspNetCore.Identity.Infrastructure.Data;
 
-public class MiauthDbContext<TUser> : ApplicationDbContext<TUser>
+public class DemoDbContext<TUser> : ApplicationDbContext<TUser>
 	where TUser : IdentityUser
 {
 

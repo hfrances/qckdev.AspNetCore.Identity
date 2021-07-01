@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace qckdev.AspNetCore.IdentityTest.Services
+namespace qckdev.AspNetCore.Identity.Test.Services
 {
     sealed class TestAuthorizationFlow : AuthorizationFlow<TestAuthenticationOptions, TestAuthenticationHandler>
     {

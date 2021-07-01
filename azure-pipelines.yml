@@ -14,11 +14,11 @@ variables:
   - name: BuildParameters.RestoreBuildProjects
     value: '**/*.Build.sln'
   - name: BuildParameters.TestProjects
-    value: '**/*Test.??proj'
+    value: '**/*.Test.??proj'
   - name: BuildParameters.ProjectKey
-    value: qckdev.AspNetCore.Identity
+    value: $(Build.DefinitionName)
   - name: BuildParameters.ProjectName
-    value: qckdev.AspNetCore.Identity
+    value: $(Build.DefinitionName)
   - name: BuildConfiguration
     value: 'Release'
 

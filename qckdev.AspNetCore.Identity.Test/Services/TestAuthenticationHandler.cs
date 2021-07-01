@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.OAuth;
 
-namespace qckdev.AspNetCore.IdentityTest.Services
+namespace qckdev.AspNetCore.Identity.Test.Services
 {
     sealed class TestAuthenticationHandler : OAuthHandler<TestAuthenticationOptions>
     {

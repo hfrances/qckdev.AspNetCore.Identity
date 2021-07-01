@@ -1,4 +1,4 @@
-﻿using qckdev.AspNetCore.IdentityTest.Services;
+﻿using qckdev.AspNetCore.Identity.Test.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +11,7 @@ using qckdev.AspNetCore.Identity.JwtBearer;
 using MediatR;
 using qckdev.AspNetCore.Identity;
 
-namespace qckdev.AspNetCore.IdentityTest.Infrastructure
+namespace qckdev.AspNetCore.Identity.Test.Infrastructure
 {
     class ServiceProviderFixture<TIdentityUser> : IDisposable
         where TIdentityUser : IdentityUser, new()

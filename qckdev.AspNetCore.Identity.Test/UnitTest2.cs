@@ -1,4 +1,4 @@
-using qckdev.AspNetCore.IdentityTest.Infrastructure;
+using qckdev.AspNetCore.Identity.Test.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
@@ -7,7 +7,7 @@ using Xunit;
 using System;
 using qckdev.AspNetCore.Identity.Services;
 
-namespace qckdev.AspNetCore.IdentityTest
+namespace qckdev.AspNetCore.Identity.Test
 {
     public class UnitTest2
     {

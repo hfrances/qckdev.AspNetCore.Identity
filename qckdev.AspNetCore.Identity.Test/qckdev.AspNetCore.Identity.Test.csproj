@@ -2,8 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>qckdev.AspNetCore.IdentityTest</RootNamespace>
-
+    <RootNamespace>qckdev.AspNetCore.Identity.Test</RootNamespace>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 

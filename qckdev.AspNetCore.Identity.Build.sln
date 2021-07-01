@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.AspNetCore.Identity.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.AspNetCore.Identity.Microsoft", "qckdev.AspNetCore.Identity.Microsoft\qckdev.AspNetCore.Identity.Microsoft.csproj", "{94AC2233-BA8D-4574-9598-85D89674709F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.AspNetCore.IdentityTest", "qckdev.AspNetCore.IdentityTest\qckdev.AspNetCore.IdentityTest.csproj", "{1D88F267-2D55-4B4A-B1D9-F7D48773BA5D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "qckdev.AspNetCore.Identity.Test", "qckdev.AspNetCore.Identity.Test\qckdev.AspNetCore.Identity.Test.csproj", "{1D88F267-2D55-4B4A-B1D9-F7D48773BA5D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

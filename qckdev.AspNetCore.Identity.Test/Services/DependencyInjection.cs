@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace qckdev.AspNetCore.IdentityTest.Services
+namespace qckdev.AspNetCore.Identity.Test.Services
 {
     static class DependencyInjection
     {

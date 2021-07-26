@@ -13,9 +13,14 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static AuthenticationBuilder AddJwtBearer(this AuthenticationBuilder builder, JwtTokenConfiguration configuration)
         {
+            return AddJwtBearer(builder, JwtBearerDefaults.AuthenticationScheme, configuration);
+        }
+
+        public static AuthenticationBuilder AddJwtBearer(this AuthenticationBuilder builder, string authenticationScheme, JwtTokenConfiguration configuration)
+        {
             var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration.Key));
 
-            return builder.AddJwtBearer(
+            return builder.AddJwtBearer(authenticationScheme,
                 options =>
                 {
                     options.RequireHttpsMetadata = false;

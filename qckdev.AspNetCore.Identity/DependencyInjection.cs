@@ -16,6 +16,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class QIdentityDependencyInjection
     {
 
+        [Obsolete("It will be removed", true)]
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             return services

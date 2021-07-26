@@ -82,7 +82,6 @@ namespace miauthcore
             var microsoftConfiguration = configuration.GetSection("Authentication:Microsoft").Get<Model.MicrosoftAuthenticationConfig>();
 
             services
-                .AddApplication()
                 .AddInfrastructure<TUser, MiauthDbContext<TUser>>(options =>
                     options.UseInMemoryDatabase("miauth")
                 )

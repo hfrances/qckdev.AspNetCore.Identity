@@ -1,5 +1,11 @@
+<a href="https://www.nuget.org/packages/qckdev.AspNetCore.Identity"><img src="https://img.shields.io/nuget/v/qckdev.AspNetCore.Identity.svg" alt="NuGet Version"/></a>
+<a href="https://sonarcloud.io/dashboard?id=qckdev.AspNetCore.Identity"><img src="https://sonarcloud.io/api/project_badges/measure?project=qckdev.AspNetCore.Identity&metric=alert_status" alt="Quality Gate"/></a>
+<a href="https://sonarcloud.io/dashboard?id=qckdev.AspNetCore.Identity"><img src="https://sonarcloud.io/api/project_badges/measure?project=qckdev.AspNetCore.Identity&metric=coverage" alt="Code Coverage"/></a>
+<a><img src="https://hfrances.visualstudio.com/Main/_apis/build/status/qckdev.AspNetCore.Identity?branchName=master" alt="Azure Pipelines Status"/></a>
+
+
 # qckdev.AspNetCore.Identity
- 
+
 ```cs
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +18,6 @@ public void ConfigureServices(IServiceCollection services)
 	var jwtTokenConfiguration = JwtTokenConfiguration.Get(configuration, "Tokens");
 
 	services
-		.AddApplication()
 		.AddInfrastructure<TUser, DemoDbContext<TUser>>(options =>
 			options.UseInMemoryDatabase("miauth")
 		)
@@ -27,7 +32,7 @@ public void ConfigureServices(IServiceCollection services)
 			options.ClientId = configuration["Authentication:Google:ClientId"];
 			options.ClientSecret = configuration["Authentication:Google:ClientSecret"];
 		})
-	.AddGoogleAuthorizationFlow()
+		.AddGoogleAuthorizationFlow()
 		.AddMicrosoftAccount("MSAL", Guid.Parse(configuration["Authentication:Microsoft:TenantId"]),
 			options =>
 			{

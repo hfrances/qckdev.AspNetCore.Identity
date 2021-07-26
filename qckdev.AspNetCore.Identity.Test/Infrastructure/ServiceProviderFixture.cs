@@ -31,7 +31,6 @@ namespace qckdev.AspNetCore.Identity.Test.Infrastructure
             var services = new ServiceCollection();
 
             services
-                .AddApplication()
                 .AddMediatR(System.Reflection.Assembly.GetExecutingAssembly())
                 .AddInfrastructure<TIdentityUser>(options =>
                     options.UseInMemoryDatabase(this.DatabaseName)
